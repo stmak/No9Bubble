@@ -55,7 +55,9 @@ class App {
   }
 
   parseCSV(csvText) {
-    const lines = csvText.trim().split('\n');
+    // Handle Windows line endings (CRLF)
+    const normalizedText = csvText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    const lines = normalizedText.trim().split('\n');
     const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
 
     return lines.slice(1).map(line => {
@@ -397,6 +399,8 @@ class App {
       requestAnimationFrame(() => {
         modalContent.classList.remove('scale-95', 'opacity-0');
         modalContent.classList.add('scale-100', 'opacity-100');
+        // Ensure pointer events are enabled when modal opens
+        modalContent.style.pointerEvents = 'auto';
       });
     });
   }
@@ -408,6 +412,9 @@ class App {
 
     modalContent.classList.remove('scale-100', 'opacity-100');
     modalContent.classList.add('scale-95', 'opacity-0');
+    
+    // Enable pointer events during animation
+    modalContent.style.pointerEvents = 'none';
 
     setTimeout(() => {
       itemModal.classList.add('hidden');
@@ -542,7 +549,8 @@ class App {
     const encodedMessage = encodeURIComponent(message);
     
     // Open WhatsApp with pre-filled message
-    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+    const whatsappNumber = '447766628285';
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
     window.open(whatsappUrl, '_blank');
     
     // Optionally clear cart after checkout
