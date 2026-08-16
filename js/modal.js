@@ -178,7 +178,7 @@ function setupModalListeners() {
     if (M.hot) extras.push('served hot');
     if (M.ice) extras.push('+ soft serve');
     
-    const toppings = [...M.tops].map(i => window.MenuLoader.config.toppings[i]);
+    const toppingsList = [...M.tops].map(i => window.MenuLoader.config.toppings[i]);
     const unit = unitPrice();
     
     const key = [
@@ -195,7 +195,7 @@ function setupModalListeners() {
       name: M.item.n,
       emoji: M.item.e,
       meta: [...meta, ...extras].join(' · '),
-      tops,
+      tops: toppingsList,
       unit,
       qty: M.qty
     };
@@ -210,11 +210,15 @@ function setupModalListeners() {
     document.getElementById('modal').classList.remove('show');
   });
   
-  // Add buttons from menu/favourites
+  // Add buttons from menu/favourites - use event delegation on document
   document.addEventListener('click', e => {
     const a = e.target.closest('[data-add]');
-    if (a) openModal(a.dataset.add);
-  });
+    if (a) {
+      e.preventDefault();
+      e.stopPropagation();
+      openModal(a.dataset.add);
+    }
+  }, true);
 }
 
 // Initialize modal system
