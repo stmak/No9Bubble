@@ -1,18 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NO.9 Bubble Tea — Taiwanese Bubble Tea · Wolverhampton 🧋</title>
-<link rel="icon" href="no9.jpg">
-<!-- Fonts (fontsource CDN) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/oswald@latest/index.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/oswald@latest/500.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/oswald@latest/600.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/nunito@latest/index.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/nunito@latest/700.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/nunito@latest/800.css">
-<link rel="stylesheet" href="css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NO.9 Bubble Tea | Wolverhampton</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/500.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/600.css">
@@ -185,115 +178,75 @@ tailwind.config = {
   </div>
 </section>
 
-<!-- ══════════ MENU ══════════ -->
-<section id="menu" class="wrap">
-  <div class="shead">
-    <div>
-      <div class="k">The menu board 🧾</div>
-      <h2>Shaken fresh, daily</h2>
-    </div>
-    <p>M / L sizes on drinks · includes boba where it says so · extra topping +90p each. Allergies? Just ask our staff 💙</p>
-  </div>
-  <div class="pills" id="pills"></div>
-  <div id="menuRoot"></div>
-
-  <div class="topbanner">
-    <div class="bear">🐻</div>
-    <div style="flex:1;min-width:260px">
-      <h3>Toppings · +90p each — tap to build your cup in any drink</h3>
-      <div class="chips" id="topChips"></div>
-    </div>
-    <div class="price" style="font-size:1.2rem">+90p<br><small style="font-size:.65rem;letter-spacing:.14em">PER TOPPING</small></div>
-  </div>
-</section>
-
-<!-- ══════════ FIND US ══════════ -->
-<div class="find" id="findus">
-  <div class="zigzag flip" style="transform:scaleY(-1);background-image:url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;28&quot; height=&quot;14&quot;><path d=&quot;M0 14 L7 2 L14 14 L21 2 L28 14&quot; fill=&quot;none&quot; stroke=&quot;%23F6F1E7&quot; stroke-width=&quot;2.5&quot;/></svg>')"></div>
-  <div class="wrap">
-    <div class="shead">
-      <div>
-        <div class="k">Find us in Wolves 📍</div>
-        <h2>Our little navy corner of WV1 💙</h2>
-      </div>
-    </div>
-    <div class="findgrid">
-      <div class="fcard">
-        <div class="ico">📍</div>
-        <h3>50 Lichfield Street</h3>
-        <p>Wolverhampton WV1 1DG — right opposite the Art Gallery. Look for the navy wall &amp; the smell of waffles.</p>
-        <p style="margin-top:.8rem"><a href="https://maps.google.com/?q=NO.9+Bubble+Tea,+50+Lichfield+Street,+Wolverhampton+WV1+1DG" target="_blank" rel="noopener">Get directions →</a></p>
-      </div>
-      <div class="fcard">
-        <div class="ico">🕚</div>
-        <h3>Opening hours</h3>
-        <div class="hours">
-          <div><span>Mon – Thu</span><b>11:00 – 19:00</b></div>
-          <div><span>Fri – Sat</span><b>11:00 – 20:00</b></div>
-          <div><span>Sunday</span><b>12:00 – 18:00</b></div>
+    <!-- Menu Section -->
+    <section class="menu-section" id="menu">
+        <div class="container">
+            <h2 class="section-title">Our Menu</h2>
+            <div class="menu-container" id="menuContainer">
+                <!-- Menu items will be loaded here -->
+            </div>
         </div>
-      </div>
-      <div class="fcard">
-        <div class="ico">📸</div>
-        <h3>Follow the bubbles</h3>
-        <p><a href="https://www.instagram.com/no.9_bubbletea" target="_blank" rel="noopener">@no.9_bubbletea</a> — 139 posts of drops, drizzles &amp; happy customers. Thanks for coming! ❤️</p>
-        <p style="margin-top:.8rem">Orders &amp; questions:<br><a href="https://wa.me/447766628285" target="_blank" rel="noopener">WhatsApp +44 7766 628285 →</a></p>
-      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <h2 class="section-title">About NO.9</h2>
+            <div class="about-content">
+                <p>Welcome to NO.9 Bubble Tea, located in the heart of Wolverhampton. We serve freshly made bubble tea, waffles, and shakes with love and care.</p>
+                <p>Every drink is crafted to perfection, using only the finest ingredients. Come visit us opposite the Wolverhampton Art Gallery!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <h2 class="section-title">Find Us</h2>
+            <div class="contact-content">
+                <p><strong>📍 Address:</strong> Opposite Wolverhampton Art Gallery, Wolverhampton, UK</p>
+                <p><strong>⏰ Hours:</strong> Mon-Sun: 11:00 AM - 9:00 PM</p>
+                <p><strong>📞 Phone:</strong> 01902 123456</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Your Order</h3>
+            <button class="close-cart" id="closeCart">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items will be added here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">£0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="alert('Checkout coming soon!')">Proceed to Checkout</button>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- ══════════ FOOTER ══════════ -->
-<footer>
-  <div class="wrap">
-    <div class="fl">
-      <img src="cms/images/logo.jpg" alt="NO.9 logo" onerror="this.onerror=null;this.src='https://image.qwenlm.ai/public_source/ae3b6d31-014f-422b-9e71-1650671e6c18/1af18e97d-a526-4e2e-9410-576fafb99d86.png';">
-      <span><b>NO.9 BUBBLE TEA</b><br>Taiwanese Bubble Tea · Est. 2023</span>
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Item Modal -->
+    <div class="modal" id="itemModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">&times;</button>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be populated dynamically -->
+            </div>
+        </div>
     </div>
-    <span>Brewed to perfection, bubbled for happiness 🧋</span>
-    <span>© 2026 NO.9 Bubble Tea · Wolverhampton</span>
-  </div>
-</footer>
 
-<!-- ══════════ CART DRAWER ══════════ -->
-<div class="overlay" id="overlay"></div>
-<aside class="drawer" id="drawer" aria-label="Shopping cart">
-  <div class="dhead"><span class="bear">🐻</span><h3 class="disp">Your basket</h3><button class="xbtn" id="cartClose" aria-label="Close cart">✕</button></div>
-  <div class="dbody" id="cartBody"></div>
-  <div class="dfoot">
-    <div class="totrow"><span>Total · the bear does the maths</span><span class="t" id="cartTotal">£0.00</span></div>
-    <label for="cName">Your name</label>
-    <input id="cName" type="text" placeholder="e.g. Alex" autocomplete="name">
-    <label for="cTime">Collection time</label>
-    <input id="cTime" type="text" placeholder="ASAP or e.g. 14:30">
-    <label for="cNotes">Notes (allergies, less ice…)</label>
-    <textarea id="cNotes" rows="2" placeholder="Optional"></textarea>
-    <button class="wabtn" id="waSend">💬 Send order via WhatsApp</button>
-    <div class="note">Opens WhatsApp with your order addressed to +44 7766 628285 — just press send.</div>
-  </div>
-</aside>
-
-<!-- ══════════ ITEM MODAL ══════════ -->
-<div class="modal" id="modal">
-  <div class="mbox">
-    <div class="mhd"><div class="tile" id="mEmoji">🧋</div><h3 id="mName">Item</h3><button class="xbtn" id="mClose" aria-label="Close">✕</button></div>
-    <div class="mbd" id="mBody"></div>
-    <div class="mfoot">
-      <div class="qty"><button id="qMinus" aria-label="Decrease">−</button><span id="qVal">1</span><button id="qPlus" aria-label="Increase">+</button></div>
-      <div class="tot" id="mTotal">£0.00</div>
-      <button class="addbtn" id="mAdd">Add to basket</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast">Added to basket 🧋</div>
-<a class="fab" href="https://wa.me/447766628285?text=Hi%20NO.9!%20%F0%9F%A7%8B" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">💬</a>
-
-<!-- ══════════ JAVASCRIPT MODULES ══════════ -->
-<script src="js/cart.js"></script>
-<script src="js/menu-loader.js"></script>
-<script src="js/menu-renderer.js"></script>
-<script src="js/modal.js"></script>
-<script src="js/favourites.js"></script>
+    <!-- Scripts -->
+    <script src="js/data-loader.js"></script>
+    <script src="js/cart-system.js"></script>
+    <script src="js/modal-handler.js"></script>
+    <script src="js/menu-renderer.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>

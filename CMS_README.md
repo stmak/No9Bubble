@@ -1,98 +1,164 @@
-# CMS System for NO.9 Bubble Tea Menu
+# NO.9 Bubble Tea - CMS System
 
-## Overview
-The menu is now dynamically generated from a CSV file, making it easy to update without touching the code.
+A fully refactored content management system for the NO.9 Bubble Tea website. The menu is now dynamically generated from a CSV file, making it easy to update without touching any code.
 
 ## Folder Structure
+
 ```
-cms/
-├── data/
-│   └── menu.csv          # Menu items data (51 unique items)
-└── images/               # Product images folder
-    ├── brown-sugar-1.png
-    ├── brown-sugar-2.png
-    ├── milk-tea-1.png
-    └── ... (all 51 items)
+/workspace/
+├── index.html              # Main HTML file
+├── css/
+│   └── styles.css          # All styling
+├── js/
+│   ├── data-loader.js      # Loads and parses CSV data
+│   ├── cart-system.js      # Shopping cart functionality
+│   ├── modal-handler.js    # Item modal and customization
+│   ├── menu-renderer.js    # Renders menu grouped by category
+│   └── app.js              # Main application initializer
+├── cms/
+│   ├── data/
+│   │   └── menu.csv        # Menu items database
+│   └── images/             # Product images (PNG format)
+│       ├── brown-sugar-1.png
+│       ├── brown-sugar-2.png
+│       ├── milk-tea-1.png
+│       └── ... (51 total images)
+└── CMS_README.md           # This file
 ```
 
-## Menu Item IDs
-Each of the 51 menu items has a **unique ID** following the pattern: `{category}-{number}`
+## Features
 
-### ID List by Category:
-- **Brown Sugar Series**: `brown-sugar-1` through `brown-sugar-5` (5 items)
-- **Milk Bubble Tea**: `milk-tea-1` through `milk-tea-7` (7 items)
-- **Iced Fruit Tea**: `fruit-tea-1` through `fruit-tea-11` (11 items)
-- **Slushies**: `slushies-1` through `slushies-5` (5 items)
-- **Milk Shakes**: `milk-shakes-1` through `milk-shakes-8` (8 items)
-- **Bubble Waffle**: `waffle-1` through `waffle-7` (7 items)
-- **Soft Serve**: `soft-serve-1` (1 item)
-- **Coffee & Hot Drinks**: `coffee-1` through `coffee-7` (7 items)
+### 1. Dynamic Menu Loading
+- Menu items are loaded from `cms/data/menu.csv`
+- Items are automatically grouped by category
+- Each item has a unique ID for image mapping
 
-## Image Naming Convention
-Images must be named exactly as the menu item ID with `.png` extension:
-- `brown-sugar-1.png` → Brown Sugar Bubble Milk Tea
-- `brown-sugar-2.png` → Brown Sugar Bubble Milk
-- `milk-tea-1.png` → Strawberry Milk Bubble Tea
-- `fruit-tea-5.png` → Watermelon Iced Fruit Tea
-- `waffle-3.png` → Lotus Biscoff Bubble Waffle
-- `coffee-1.png` → No.9 Coffee
+### 2. Image System
+- Images are stored in `cms/images/` folder
+- File naming convention: `{id}.png` (e.g., `brown-sugar-1.png`)
+- If an image is missing, a fallback emoji placeholder is shown
+- PNG format for better quality and transparency support
 
-**Total: 51 unique PNG files needed**
+### 3. Shopping Cart
+- Fully functional cart with add/remove/update quantity
+- Cart persists in localStorage
+- Size selection (M/L) with different pricing
+- Multiple topping options available
+- Real-time total calculation
 
-## CSV File Format
-Location: `cms/data/menu.csv`
+### 4. Modal System
+- Click any menu item or "Add +" button to open modal
+- Select size (M or L)
+- Choose from 8 topping options
+- Add to cart with customizations
 
-### Columns:
-| Column | Description | Example |
-|--------|-------------|---------|
-| `id` | Unique identifier (used for image filename) | `brown-sugar-1` |
-| `category` | Category name for grouping | `Brown Sugar Series` |
-| `emoji` | Emoji icon for the item | `✨` |
-| `name` | Display name | `Brown Sugar Bubble Milk Tea` |
-| `description` | Item description (optional) | `Tiger-striped, sweet & creamy` |
-| `size_m` | Medium/Regular price | `5.80` |
-| `size_l` | Large price (0 if not applicable) | `6.80` |
-| `toppings_included` | 1=yes, 0=no | `1` |
-| `oat_option` | 1=yes, 0=no | `1` |
-| `hot_option` | 1=yes, 0=no | `1` |
-| `ice_option` | 1=yes, 0=no | `0` |
+### 5. Category Grouping
+- Items are grouped by their category from CSV
+- Each category displays as a separate section
+- Category title includes emoji from first item
 
-## How to Update the Menu
+## How to Update Menu
 
-### 1. Add/Edit Menu Items
-Edit `cms/data/menu.csv`:
-- Add a new row for each new item
-- Ensure the `id` is unique across ALL items
-- Use the format `{category-prefix}-{number}`
+### Adding/Editing Menu Items
 
-### 2. Add Images
-Place PNG images in `cms/images/` folder:
-- Name each file exactly as the item's `id` + `.png`
-- Example: For item with id `milk-tea-3`, name the file `milk-tea-3.png`
+1. Open `cms/data/menu.csv`
+2. Edit the CSV file with your preferred editor
+3. CSV columns:
+   - `id`: Unique identifier (used for image filename)
+   - `category`: Category name (items with same category are grouped)
+   - `emoji`: Emoji icon for the item
+   - `name`: Item name
+   - `description`: Item description
+   - `size_m`: Price for medium size
+   - `size_l`: Price for large size
+   - `toppings_included`: Whether toppings are included (1/0)
+   - `oat_option`: Oat milk option available (1/0)
+   - `hot_option`: Hot option available (1/0)
+   - `ice_option`: Ice option available (1/0)
 
-### 3. Test Locally
+### Adding Images
+
+1. Create PNG images for each menu item
+2. Name each image exactly as the item's ID: `{id}.png`
+3. Place images in `cms/images/` folder
+4. Recommended size: 400x400px or higher
+
+Example:
+- Item ID: `brown-sugar-1` → Image: `cms/images/brown-sugar-1.png`
+- Item ID: `milk-tea-3` → Image: `cms/images/milk-tea-3.png`
+
+## Running Locally
+
 ```bash
 cd /workspace
 python3 -m http.server 8000
 ```
-Then open `http://localhost:8000` in your browser.
 
-## JavaScript Files
-- `js/menu-loader.js` - Loads and parses CSV, generates menu structure
-- `js/menu-renderer.js` - Renders the menu UI from loaded data
-- `js/cart.js` - Shopping cart functionality
-- `js/modal.js` - Product detail modal
-- `js/favourites.js` - Favourites system
+Then open: http://localhost:8000
 
-## Key Features
-✅ Menu generated dynamically from CSV  
-✅ Unique IDs for all 51 items  
-✅ Images loaded automatically based on ID (`{id}.png`)  
-✅ Easy to add/edit/remove items  
-✅ Modular, maintainable code structure  
-✅ Categories grouped automatically  
+## Current Menu Categories
+
+1. Brown Sugar Series (5 items)
+2. Milk Bubble Tea (7 items)
+3. Iced Fruit Tea (11 items)
+4. Slushies (5 items)
+5. Milk Shakes (8 items)
+6. Bubble Waffle (7 items)
+7. Soft Serve (1 item)
+8. Coffee & Hot Drinks (7 items)
+
+**Total: 51 unique menu items**
+
+## Technical Details
+
+### Data Flow
+1. `data-loader.js` fetches and parses CSV
+2. Data is organized by category in a Map
+3. `menu-renderer.js` generates HTML for each category group
+4. `cart-system.js` manages cart state and localStorage
+5. `modal-handler.js` handles item customization
+6. `app.js` initializes all components
+
+### Global Functions
+- `window.openItemModal(itemId)` - Opens modal for specific item
+- `window.cartSystem` - Access cart system methods
+- `window.modalHandler` - Access modal handler methods
+
+### Browser Storage
+Cart data is persisted in `localStorage` under key `no9cart`
+
+## Customization
+
+### Changing Colors
+Edit CSS variables in `css/styles.css`:
+- `#FF6B9D` - Primary pink
+- `#4ECDC4` - Secondary teal
+- `#FFE66D` - Accent yellow
+
+### Adding New Toppings
+Edit the `availableToppings` array in `js/modal-handler.js`
+
+### Modifying Categories
+Simply update the `category` field in `menu.csv` - categories are auto-generated
 
 ## Troubleshooting
-- **Image not showing?** Check that the filename matches the ID exactly (case-sensitive)
-- **Menu not loading?** Verify CSV format and ensure no syntax errors
-- **Wrong category grouping?** Each unique ID creates its own entry; items with same category name are grouped together
+
+### Images not showing
+- Check image filename matches item ID exactly
+- Ensure images are in `cms/images/` folder
+- Verify PNG format
+- Check browser console for 404 errors
+
+### Cart not working
+- Clear browser cache and localStorage
+- Check browser console for JavaScript errors
+- Ensure all JS files are loading correctly
+
+### Menu not loading
+- Verify `menu.csv` exists at `cms/data/menu.csv`
+- Check CSV format (comma-separated, proper headers)
+- Ensure HTTP server is running (fetch requires server)
+
+## License
+
+Proprietary - NO.9 Bubble Tea
