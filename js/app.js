@@ -26,6 +26,7 @@ class App {
     this.renderMenu('all');
     this.renderSignatures();
     this.setupRevealAnimation();
+    console.log('App initialized, menu items:', this.menuItems.length);
   }
 
   cacheDOMElements() {
