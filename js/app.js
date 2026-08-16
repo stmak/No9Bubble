@@ -70,8 +70,8 @@ class App {
         item[header] = values[index] || '';
       });
 
-      // Normalize price based on CSV structure
-      if (item.size_m && !item.price) {
+      // Normalize price based on CSV structure - size_m contains the price
+      if (item.size_m) {
         item.price = item.size_m;
       }
       if (!item.id) {
@@ -310,16 +310,16 @@ class App {
     const signaturesGrid = this.domCache.signaturesGrid;
     if (!signaturesGrid) return;
 
-    // Get popular items - use first item from each major category or most expensive items
+    // Get popular items by ID first
     const signatureIds = ['brown-sugar-1', 'waffle-1', 'slushies-1'];
     let signatures = signatureIds.map(id => this.menuItems.find(i => i.id === id)).filter(Boolean);
 
     // If specific IDs not found, get top items by different criteria
     if (signatures.length < 3) {
       // Get first item from Brown Sugar, Waffles, and Slushies categories
-      const brownSugar = this.menuItems.find(i => i.category.includes('Brown Sugar'));
-      const waffle = this.menuItems.find(i => i.category.includes('Waffle'));
-      const slushie = this.menuItems.find(i => i.category.includes('Slushie'));
+      const brownSugar = this.menuItems.find(i => i.category && i.category.includes('Brown Sugar'));
+      const waffle = this.menuItems.find(i => i.category && i.category.includes('Waffle'));
+      const slushie = this.menuItems.find(i => i.category && i.category.includes('Slushie'));
       
       signatures = [brownSugar, waffle, slushie].filter(Boolean);
     }
