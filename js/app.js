@@ -57,19 +57,43 @@ class App {
   parseCSV(csvText) {
     const lines = csvText.trim().split('\n');
     const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-    
+
     return lines.slice(1).map(line => {
-      const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
-      const item = {};
+      // Handle quoted fields properly
+      const values = [];
+      let current = '';
+      let inQuotes = false;
       
+      for (let char of line) {
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          values.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      values.push(current.trim());
+      
+      const item = {};
+
       headers.forEach((header, index) => {
-        let value = values[index] ? values[index].trim() : '';
+        let value = values[index] || '';
         if (value.startsWith('"') && value.endsWith('"')) {
           value = value.slice(1, -1);
         }
         item[header] = value;
       });
-      
+
+      // Normalize price based on CSV structure
+      if (item.size_m && !item.price) {
+        item.price = item.size_m;
+      }
+      if (!item.id) {
+        item.id = item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      }
+
       return item;
     });
   }
@@ -197,10 +221,9 @@ class App {
     }
 
     // Checkout
+    // Checkout - WhatsApp integration
     if (checkoutBtn) {
-      checkoutBtn.addEventListener('click', () => {
-        alert('Checkout functionality coming soon! 🧋');
-      }, { passive: true });
+      checkoutBtn.addEventListener('click', () => this.checkoutViaWhatsApp(), { passive: true });
     }
 
     // Reveal on scroll
@@ -210,12 +233,31 @@ class App {
   renderMenu(filter = 'all') {
     const menuGrid = this.domCache.menuGrid;
     if (!menuGrid) return;
+    // Normalize filter to match CSV category names
+    const categoryMap = {
+      'all': 'all',
+      'brown-sugar': 'Brown Sugar',
+      'milk-tea': 'Milk',
+      'fruit-tea': 'Fruit',
+      'slushies': 'Slushie',
+      'waffles': 'Waffle',
+      'milkshakes': 'Shake',
+      'coffee': 'Coffee',
+      'snacks': ''
+    };
 
-    // Optimize filtering with early return
-    let filteredItems = filter === 'all' 
-      ? this.menuItems 
-      : this.menuItems.filter(item => item.category === filter);
-
+    let filteredItems;
+    if (filter === 'all') {
+      filteredItems = this.menuItems;
+    } else if (filter === 'snacks') {
+      // Snacks not in CSV, show empty or fallback
+      filteredItems = [];
+    } else {
+      const searchTerm = categoryMap[filter] || filter;
+      filteredItems = this.menuItems.filter(item => 
+        item.category && item.category.includes(searchTerm)
+      );
+    }
     // Use DocumentFragment for better performance when inserting multiple elements
     const fragment = document.createDocumentFragment();
     const tempContainer = document.createElement('div');
@@ -263,17 +305,26 @@ class App {
     const signaturesGrid = this.domCache.signaturesGrid;
     if (!signaturesGrid) return;
 
-    const signatureIds = ['brown-sugar-1', 'waffles-1', 'slushies-1'];
-    const signatures = signatureIds.map(id => this.menuItems.find(i => i.id === id)).filter(Boolean);
+    // Get popular items - use first item from each major category or most expensive items
+    const signatureIds = ['brown-sugar-1', 'waffle-1', 'slushies-1'];
+    let signatures = signatureIds.map(id => this.menuItems.find(i => i.id === id)).filter(Boolean);
 
-    if (signatures.length === 0) {
-      // Fallback signatures
-      const fallbackSigs = this.menuItems.slice(0, 3);
-      signaturesGrid.innerHTML = fallbackSigs.map(item => this.renderSignatureCard(item)).join('');
-    } else {
-      signaturesGrid.innerHTML = signatures.map(item => this.renderSignatureCard(item)).join('');
+    // If specific IDs not found, get top items by different criteria
+    if (signatures.length < 3) {
+      // Get first item from Brown Sugar, Waffles, and Slushies categories
+      const brownSugar = this.menuItems.find(i => i.category.includes('Brown Sugar'));
+      const waffle = this.menuItems.find(i => i.category.includes('Waffle'));
+      const slushie = this.menuItems.find(i => i.category.includes('Slushie'));
+      
+      signatures = [brownSugar, waffle, slushie].filter(Boolean);
+    }
+    
+    // Fallback to first 3 items if still not enough
+    if (signatures.length < 3) {
+      signatures = this.menuItems.slice(0, 3);
     }
 
+    signaturesGrid.innerHTML = signatures.map(item => this.renderSignatureCard(item)).join('');
     requestAnimationFrame(() => this.setupRevealAnimation());
   }
 
@@ -468,6 +519,36 @@ class App {
         }
       }, { passive: true });
     }
+  }
+
+  checkoutViaWhatsApp() {
+    if (this.cart.length === 0) return;
+
+    // Build order message
+    let message = '*New Order - NO.9 Bubble Tea* 🧋\n\n';
+    
+    this.cart.forEach((item, index) => {
+      message += `${index + 1}. ${item.name}\n`;
+      message += `   Size: ${item.size} | Sugar: ${item.sugar} | Ice: ${item.ice}\n`;
+      message += `   Qty: ${item.quantity} × £${item.unitPrice.toFixed(2)} = £${item.totalPrice.toFixed(2)}\n\n`;
+    });
+
+    // Calculate total
+    const total = this.cart.reduce((sum, item) => sum + item.totalPrice, 0);
+    message += `*Total: £${total.toFixed(2)}*\n\n`;
+    message += 'Please confirm your order and delivery details.';
+
+    // Encode for WhatsApp
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Open WhatsApp with pre-filled message
+    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+    
+    // Optionally clear cart after checkout
+    // this.cart = [];
+    // this.updateCartDisplay();
+    // this.closeCart();
   }
 
   setupRevealAnimation() {
