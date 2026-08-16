@@ -11,6 +11,12 @@ class ModalHandler {
         this.closeBtn = document.getElementById('closeModal');
         this.overlay = document.getElementById('overlay');
         
+        // Bind methods to ensure proper context
+        this.addToCart = this.addToCart.bind(this);
+        this.toggleTopping = this.toggleTopping.bind(this);
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        
         this.setupEventListeners();
     }
 
@@ -52,6 +58,7 @@ class ModalHandler {
             'Coconut Jelly', 'Aloe Vera', 'Cheese Foam'
         ];
         
+        const self = this;
         availableToppings.forEach(topping => {
             toppingsHtml += `
                 <label class="topping-option">
@@ -82,7 +89,7 @@ class ModalHandler {
                 </div>
             </div>
             
-            <button class="modal-add-to-cart" onclick="window.modalHandler.addToCart()">Add to Cart</button>
+            <button class="modal-add-to-cart" id="modalAddToCartBtn">Add to Cart</button>
         `;
 
         // Setup size button listeners
@@ -94,6 +101,12 @@ class ModalHandler {
                 this.selectedSize = e.target.dataset.size;
             });
         });
+        
+        // Setup add to cart button listener
+        const addToCartBtn = this.modalBody.querySelector('#modalAddToCartBtn');
+        if (addToCartBtn) {
+            addToCartBtn.addEventListener('click', () => this.addToCart());
+        }
 
         this.modal.classList.add('active');
         this.overlay.classList.add('active');

@@ -32,7 +32,7 @@ class MenuRenderer {
                 const imageSrc = `cms/images/${item.id}.png`;
                 
                 html += `
-                    <div class="menu-item" onclick="window.openItemModal('${item.id}')">
+                    <div class="menu-item" onclick="openItemModal('${item.id}')">
                         <img src="${imageSrc}" alt="${item.name}" class="menu-item-image" 
                              onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2240%22>${item.emoji || '🧋'}</text></svg>'">
                         <div class="menu-item-info">
@@ -40,7 +40,7 @@ class MenuRenderer {
                             <p class="menu-item-description">${item.description || ''}</p>
                             <div class="menu-item-price">
                                 <span class="price-tag">£${price}</span>
-                                <button class="add-btn" onclick="event.stopPropagation(); window.openItemModal('${item.id}')">Add +</button>
+                                <button class="add-btn" onclick="event.stopPropagation(); openItemModal('${item.id}')">Add +</button>
                             </div>
                         </div>
                     </div>
@@ -59,3 +59,13 @@ class MenuRenderer {
 
 // Make available globally
 window.MenuRenderer = MenuRenderer;
+
+// Global function for opening item modal
+function openItemModal(itemId) {
+    if (window.app && window.app.modalHandler) {
+        const item = window.app.dataLoader.getItemById(itemId);
+        if (item) {
+            window.app.modalHandler.openModal(item);
+        }
+    }
+}
