@@ -1,159 +1,61 @@
-/**
- * Menu Renderer - Renders menu UI from loaded menu data
- */
-
-const TP = 0.90; // topping price
-const SAUCES = ['Chocolate', 'Strawberry', 'Lotus Biscoff'];
-
-let MENU = [];
-
-// Initialize the menu system
-async function initMenu() {
-  try {
-    MENU = await window.MenuLoader.loadMenu();
-    
-    if (MENU.length === 0) {
-      console.warn('No menu items loaded');
-      return;
+// Menu Renderer - Renders menu items grouped by category
+class MenuRenderer {
+    constructor(dataLoader, modalHandler) {
+        this.dataLoader = dataLoader;
+        this.modalHandler = modalHandler;
+        this.container = document.getElementById('menuContainer');
     }
-    
-    renderTicker();
-    renderPills();
-    renderMenuSections();
-    renderToppings();
-    setupPillScrolling();
-    setupIntersectionObserver();
-  } catch (error) {
-    console.error('Failed to initialize menu:', error);
-  }
-}
 
-// Render the ticker animation
-function renderTicker() {
-  const tickerEl = document.getElementById('ticker');
-  if (!tickerEl) return;
-  
-  const items = MENU.map(c => c.cat + ' <i>' + c.emoji + '</i>').join('<span>✦</span>');
-  tickerEl.innerHTML = '<span>' + items + '</span><span>✦</span><span>' + items + '</span><span>✦</span>';
-}
+    render() {
+        const categories = this.dataLoader.getCategories();
+        
+        if (categories.size === 0) {
+            this.container.innerHTML = '<p style="text-align:center;color:#666;">Loading menu...</p>';
+            return;
+        }
 
-// Render category pills
-function renderPills() {
-  const pillsEl = document.getElementById('pills');
-  if (!pillsEl) return;
-  
-  pillsEl.innerHTML = MENU.map(c => 
-    `<button class="pill" data-go="${c.id}">${c.emoji} ${c.cat}</button>`
-  ).join('');
-}
-
-// Render all menu sections
-function renderMenuSections() {
-  const menuRoot = document.getElementById('menuRoot');
-  if (!menuRoot) return;
-  
-  menuRoot.innerHTML = MENU.map((c, ci) => {
-    const itemsHtml = c.items.map((it, ii) => {
-      const sz = it.s || c.sizes;
-      const priceTxt = sz.length > 1 
-        ? sz.map(x => x[0] + ' £' + x[1].toFixed(2)).join(' · ') 
-        : '£' + sz[0][1].toFixed(2);
-      
-      return `
-        <article class="mcard">
-          <div class="img-wrap">
-            <img src="${it.image}" alt="${it.n}" onerror="this.onerror=null;this.src='https://via.placeholder.com/300x200?text=${encodeURIComponent(it.n)}';">
-          </div>
-          <div class="top">
-            <div class="tile">${it.e}</div>
-            <h4>${it.n}</h4>
-          </div>
-          ${it.d ? '<p>' + it.d + '</p>' : '<p>&nbsp;</p>'}
-          <div class="row">
-            <span class="price">${priceTxt}</span>
-            <button class="plusbtn" data-add="${c.id}:${ii}" aria-label="Add ${it.n}">+</button>
-          </div>
-        </article>`;
-    }).join('');
-    
-    return `
-      <div class="msec" id="${c.id}">
-        <div class="mhead">
-          <span class="emo">${c.emoji}</span>
-          <h3>${c.cat}</h3>
-          <small>${c.note}</small>
-        </div>
-        <div class="mgrid">
-          ${itemsHtml}
-        </div>
-      </div>`;
-  }).join('');
-}
-
-// Render toppings chips
-function renderToppings() {
-  const topChipsEl = document.getElementById('topChips');
-  if (!topChipsEl) return;
-  
-  const toppings = window.MenuLoader.config.toppings;
-  topChipsEl.innerHTML = toppings.map(t => 
-    `<span class="tchip">${t} <b>+90p</b></span>`
-  ).join('');
-}
-
-// Setup pill click handlers for scrolling
-function setupPillScrolling() {
-  document.addEventListener('click', e => {
-    const p = e.target.closest('.pill');
-    if (p) {
-      const targetId = p.dataset.go;
-      const targetEl = document.getElementById(targetId);
-      if (targetEl) {
-        targetEl.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  });
-}
-
-// Setup intersection observer for active pill highlighting
-function setupIntersectionObserver() {
-  const secObs = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        document.querySelectorAll('.pill').forEach(p => {
-          p.classList.toggle('on', p.dataset.go === entry.target.id);
+        let html = '';
+        
+        categories.forEach((items, categoryName) => {
+            const categorySlug = categoryName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            const firstItem = items[0];
+            const categoryEmoji = firstItem ? firstItem.emoji : '🧋';
+            
+            html += `
+                <div class="category-group" id="${categorySlug}">
+                    <h3 class="category-title">${categoryEmoji} ${categoryName}</h3>
+                    <div class="menu-grid">
+            `;
+            
+            items.forEach(item => {
+                const price = parseFloat(item.size_m) > 0 ? item.size_m : item.size_l;
+                const imageSrc = `cms/images/${item.id}.png`;
+                
+                html += `
+                    <div class="menu-item" onclick="window.openItemModal('${item.id}')">
+                        <img src="${imageSrc}" alt="${item.name}" class="menu-item-image" 
+                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><rect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2240%22>${item.emoji || '🧋'}</text></svg>'">
+                        <div class="menu-item-info">
+                            <h4 class="menu-item-name">${item.emoji || ''} ${item.name}</h4>
+                            <p class="menu-item-description">${item.description || ''}</p>
+                            <div class="menu-item-price">
+                                <span class="price-tag">£${price}</span>
+                                <button class="add-btn" onclick="event.stopPropagation(); window.openItemModal('${item.id}')">Add +</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
         });
-      }
-    });
-  }, { rootMargin: '-40% 0px -55% 0px' });
-  
-  MENU.forEach(c => {
-    const el = document.getElementById(c.id);
-    if (el) secObs.observe(el);
-  });
+        
+        this.container.innerHTML = html;
+    }
 }
 
-// Helper function to find category by ID
-window.findCat = function(id) {
-  return MENU.find(c => c.id === id);
-};
-
-// Format price as GBP
-window.gbp = function(n) {
-  return '£' + n.toFixed(2);
-};
-
-// Export for use in other scripts
-window.MenuRenderer = {
-  init: initMenu,
-  getMenu: () => MENU,
-  getToppingPrice: () => TP,
-  getSauces: () => SAUCES
-};
-
-// Auto-initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initMenu);
-} else {
-  initMenu();
-}
+// Make available globally
+window.MenuRenderer = MenuRenderer;
