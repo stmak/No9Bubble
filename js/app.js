@@ -58,34 +58,16 @@ class App {
     // Handle Windows line endings (CRLF)
     const normalizedText = csvText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
     const lines = normalizedText.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+    
+    // Parse header line
+    const headers = this.parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
 
     return lines.slice(1).map(line => {
-      // Handle quoted fields properly
-      const values = [];
-      let current = '';
-      let inQuotes = false;
-      
-      for (let char of line) {
-        if (char === '"') {
-          inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-          values.push(current.trim());
-          current = '';
-        } else {
-          current += char;
-        }
-      }
-      values.push(current.trim());
+      const values = this.parseCSVLine(line);
       
       const item = {};
-
       headers.forEach((header, index) => {
-        let value = values[index] || '';
-        if (value.startsWith('"') && value.endsWith('"')) {
-          value = value.slice(1, -1);
-        }
-        item[header] = value;
+        item[header] = values[index] || '';
       });
 
       // Normalize price based on CSV structure
@@ -98,6 +80,27 @@ class App {
 
       return item;
     });
+  }
+
+  parseCSVLine(line) {
+    const values = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        values.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    values.push(current.trim());
+    
+    return values;
   }
 
   getFallbackMenu() {
