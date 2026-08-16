@@ -2,7 +2,6 @@
 class DataLoader {
     constructor() {
         this.menuData = [];
-        this.categories = new Map();
     }
 
     async loadMenuData() {
@@ -32,13 +31,6 @@ class DataLoader {
                     item[header] = values[index];
                 });
                 this.menuData.push(item);
-                
-                // Group by category
-                const category = item.category;
-                if (!this.categories.has(category)) {
-                    this.categories.set(category, []);
-                }
-                this.categories.get(category).push(item);
             }
         }
     }
@@ -65,10 +57,6 @@ class DataLoader {
 
     getMenuData() {
         return this.menuData;
-    }
-
-    getCategories() {
-        return this.categories;
     }
 
     getItemById(id) {
