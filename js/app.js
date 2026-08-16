@@ -22,10 +22,8 @@ class App {
 
         // Initialize menu renderer
         this.menuRenderer = new MenuRenderer(this.dataLoader, this.modalHandler);
-        this.menuRenderer.render();
-
-        // Setup cart sidebar toggle
-        this.setupCartSidebar();
+        this.menuRenderer.renderMenu('all');
+        this.menuRenderer.renderSignatures();
 
         // Expose global function for opening item modal
         window.openItemModal = (itemId) => {
@@ -36,38 +34,6 @@ class App {
         };
 
         console.log('NO.9 Bubble Tea app initialized successfully!');
-    }
-
-    setupCartSidebar() {
-        const cartBtn = document.getElementById('cartBtn');
-        const closeCart = document.getElementById('closeCart');
-        const cartSidebar = document.getElementById('cartSidebar');
-        const overlay = document.getElementById('overlay');
-
-        if (cartBtn) {
-            cartBtn.addEventListener('click', () => {
-                cartSidebar.classList.add('active');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
-        }
-
-        if (closeCart) {
-            closeCart.addEventListener('click', () => {
-                cartSidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-        }
-
-        if (overlay) {
-            overlay.addEventListener('click', () => {
-                cartSidebar.classList.remove('active');
-                document.getElementById('itemModal').classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-        }
     }
 }
 
