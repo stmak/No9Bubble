@@ -34,6 +34,9 @@ function addToCart(line) {
   showToast(line.name + ' added 🧋');
 }
 
+// Make addToCart available globally for modal.js fallback
+window.addToCart = addToCart;
+
 // Remove or decrease item from cart
 function removeFromCart(index, qty = 1) {
   if (!cart[index]) return;
