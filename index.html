@@ -7,39 +7,176 @@
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container header-content">
-            <div class="logo">
-                <h1>NO.9</h1>
-                <p>Bubble Tea</p>
-            </div>
-            <nav class="nav">
-                <a href="#menu">Menu</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
-            </nav>
-            <button class="cart-btn" id="cartBtn">
-                🛒 <span id="cartCount">0</span>
-            </button>
-        </div>
-    </header>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.0.8/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.0.8/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.0.8/800.css">
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-text">
-                <h2 class="hero-title">
-                    <span style="color: #FF6B9D;">✨</span> 
-                    <span style="color: #FF6B9D; font-weight: 800;">Brewed to perfection</span>, 
-                    <span style="color: #4ECDC4; font-weight: 800;">bubbled for happiness</span> — 
-                    <span style="color: #FFE66D; font-weight: 800;">now pouring opposite Wolverhampton Art Gallery</span> 
-                    <span style="color: #FF6B9D; font-weight: 800;">❤️</span>
-                </h2>
-            </div>
-        </div>
-    </section>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['Fredoka', 'ui-rounded', 'system-ui', 'sans-serif'],
+        body: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
+      colors: {
+        cream:  '#F7F0E3',
+        milk:   '#FFFBF2',
+        navy:   { DEFAULT: '#1E2A4A', deep: '#141E38' },
+        caramel:{ DEFAULT: '#C08048', deep: '#9A6430' },
+        blush:  { DEFAULT: '#F2A3B1', deep: '#E27D90' },
+        gold:   '#D9B36A',
+      },
+      boxShadow: {
+        sticker: '0 0 0 6px #FFFBF2, 0 14px 30px -12px rgba(30,42,74,.35)',
+        card: '0 10px 34px -14px rgba(30,42,74,.25)',
+      },
+    },
+  },
+};
+</script>
+
+<style>
+  html { scroll-padding-top: 96px; }
+  ::selection { background: #F2A3B1; color: #141E38; }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #F7F0E3; }
+  ::-webkit-scrollbar-thumb { background: #C08048; border-radius: 99px; border: 2px solid #F7F0E3; }
+
+  .dotted-bg {
+    background-image: radial-gradient(rgba(30,42,74,.10) 1.5px, transparent 1.5px);
+    background-size: 26px 26px;
+  }
+  .dotted-bg-light {
+    background-image: radial-gradient(rgba(255,251,242,.12) 1.5px, transparent 1.5px);
+    background-size: 26px 26px;
+  }
+
+  /* marquee */
+  .marquee-track { display: flex; width: max-content; animation: marquee 26s linear infinite; }
+  .marquee-track:hover { animation-play-state: paused; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* floating pearls */
+  @keyframes floaty { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-16px) rotate(8deg); } }
+  .floaty  { animation: floaty 5s ease-in-out infinite; }
+  .floaty2 { animation: floaty 6.5s ease-in-out .8s infinite; }
+  .floaty3 { animation: floaty 7.5s ease-in-out 1.6s infinite; }
+
+  @keyframes wiggle { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+  .wiggle { animation: wiggle 3.5s ease-in-out infinite; }
+
+  @keyframes rise { 0% { transform: translateY(0); opacity: 0; } 12% { opacity: .9; } 100% { transform: translateY(-46vh); opacity: 0; } }
+  .bubble-rise { position: absolute; bottom: -40px; border-radius: 9999px; animation: rise linear infinite; }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(30px) scale(.98); transition: opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1); }
+  .reveal.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+  /* menu card pop */
+  @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .pop { animation: pop .45s cubic-bezier(.22,1,.36,1) both; }
+
+  .sticker { box-shadow: 0 0 0 5px #FFFBF2, 0 12px 26px -12px rgba(30,42,74,.4); }
+
+  .tab-btn.active { background: #1E2A4A; color: #FFFBF2; }
+  .tab-btn.active .tab-dot { background: #F2A3B1; }
+
+  .ig-tile .ig-overlay { opacity: 0; transition: opacity .3s ease; }
+  .ig-tile:hover .ig-overlay { opacity: 1; }
+  .ig-tile img { transition: transform .6s ease; }
+  .ig-tile:hover img { transform: scale(1.07); }
+
+  .heart-btn.liked svg { fill: #F2A3B1; stroke: #F2A3B1; transform: scale(1.15); }
+  .heart-btn svg { transition: transform .25s cubic-bezier(.34,1.56,.64,1), fill .2s, stroke .2s; }
+</style>
+</head>
+
+<body class="font-body bg-cream text-navy antialiased overflow-x-hidden">
+
+
+<!-- ══════════ TOP BAR ══════════ -->
+<div class="topbar">
+  <div class="wrap">
+    <span> Open daily from 11:00</span>
+    <span>🛵 Uber Eats · Deliveroo · Just Eat</span>
+    <span>💙 10% off drinks menu in-store</span>
+  </div>
+</div>
+
+<!-- ══════════ HEADER ══════════ -->
+<header>
+  <div class="wrap hd">
+    <img class="logo" src="cms/images/logo.jpg" alt="NO.9 Bubble Tea logo"
+         onerror="this.onerror=null;this.src='https://image.qwenlm.ai/public_source/ae3b6d31-014f-422b-9e71-1650671e6c18/1af18e97d-a526-4e2e-9410-576fafb99d86.png';">
+    <div class="brand">
+      <b>NO.9 BUBBLE TEA</b>
+      <small>Taiwanese Bubble Tea · Wolverhampton</small>
+    </div>
+    <nav>
+      <a href="#favourites">Favourites</a>
+      <a href="#menu">Menu</a>
+      <a href="#findus">Find us</a>
+      <button class="cartbtn" id="cartOpen" aria-label="Open cart">🧋 Cart <span class="count" id="cartCount">0</span></button>
+    </nav>
+  </div>
+</header>
+
+<!-- ══════════ HERO ══════════ -->
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <span class="chip">🐻 Est. 2023 · 3.8K+ bubble lovers</span>
+      <div class="bg-navy text-cream text-center font-display text-sm md:text-base py-2.5 px-4 tracking-wide">
+  ✨ Brewed to perfection, bubbled for happiness — now pouring opposite Wolverhampton Art Gallery ❤️
+</div>
+      <p>Hand-shaken milk teas, chewy boba, crispy bubble waffles &amp; loaded soft serve — served with a smile at 50 Lichfield Street, right opposite the Art Gallery. ❤️</p>
+      <div class="ctas">
+        <a class="btn btn-cream" href="#menu">Browse the menu 🧋</a>
+        <a class="btn btn-line" href="#findus">Find us 📍</a>
+      </div>
+      <div class="herostats">
+        <span><b>📍 WV1</b> · city centre</span>
+        <span><b>💬</b> order via WhatsApp</span>
+        <span><b>🧇</b> waffles till close</span>
+      </div>
+    </div>
+    <div class="heroimg">
+      <div class="frame">
+        <img src="https://image.qwenlm.ai/public_source/ae3b6d31-014f-422b-9e71-1650671e6c18/138fa8fae-268a-49e3-b0bb-6b8ad6eb5094.png" alt="NO.9 bubble tea drinks and bubble waffle on navy background">
+      </div>
+      <div class="stamp"><small>BREWED · BUBBLED</small><b>NO.9</b><small>WOLVERHAMPTON</small></div>
+    </div>
+  </div>
+</div>
+<div class="zigzag"></div>
+
+<!-- ══════════ TICKER ══════════ -->
+<div class="ticker"><div class="track" id="ticker"></div></div>
+
+<!-- ══════════ FAVOURITES ══════════ -->
+<section id="favourites" class="wrap">
+  <div class="shead">
+    <div>
+      <div class="k">The crowd favourites ❤️</div>
+      <h2>Most-loved in Wolves</h2>
+    </div>
+    <p>The cups &amp; waffles that started it all. Tap add, build it your way, and send your order straight to our WhatsApp.</p>
+  </div>
+  <div class="favgrid" id="favGrid">
+    <!-- Favourites rendered dynamically -->
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="num">01</div><h3>Build your cup 🧋</h3><p>Pick your drink, size, milk &amp; toppings — the bear does the maths as you go.</p></div>
+    <div class="step"><div class="num">02</div><h3>Send via WhatsApp 💬</h3><p>Your basket becomes a WhatsApp message to our shop phone — tap send &amp; we get it shaking.</p></div>
+    <div class="step"><div class="num">03</div><h3>Collect at No.9 🐻</h3><p>50 Lichfield Street, WV1 — right opposite the Art Gallery. Follow the smell of waffles.</p></div>
+  </div>
+</section>
 
     <!-- Menu Section -->
     <section class="menu-section" id="menu">
