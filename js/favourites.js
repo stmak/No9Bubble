@@ -33,7 +33,7 @@ function renderFavourites() {
       : '£' + sizes[0][1].toFixed(2);
     
     // Use image if available, otherwise use placeholder
-    const imageUrl = item.image || `cms/images/${fav.cat}_${fav.idx}.png`;
+    const imageUrl = item.image || `cms/images/${category.id}-${fav.idx + 1}.png`;
     
     return `
       <article class="fav">
