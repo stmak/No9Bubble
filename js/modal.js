@@ -200,11 +200,11 @@ function setupModalListeners() {
       qty: M.qty
     };
     
-    // Use CartSystem if available, otherwise use addToCart directly
-    if (window.CartSystem && window.CartSystem.addToCart) {
-      window.CartSystem.addToCart(lineItem);
-    } else if (typeof addToCart === 'function') {
-      addToCart(lineItem);
+    // Always use window.addToCart which is set by cart.js
+    if (typeof window.addToCart === 'function') {
+      window.addToCart(lineItem);
+    } else {
+      console.error('addToCart function not available');
     }
     
     document.getElementById('modal').classList.remove('show');
