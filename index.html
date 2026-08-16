@@ -14,7 +14,97 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/nunito@latest/800.css">
 <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.0.8/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.0.8/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.0.8/800.css">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['Fredoka', 'ui-rounded', 'system-ui', 'sans-serif'],
+        body: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
+      colors: {
+        cream:  '#F7F0E3',
+        milk:   '#FFFBF2',
+        navy:   { DEFAULT: '#1E2A4A', deep: '#141E38' },
+        caramel:{ DEFAULT: '#C08048', deep: '#9A6430' },
+        blush:  { DEFAULT: '#F2A3B1', deep: '#E27D90' },
+        gold:   '#D9B36A',
+      },
+      boxShadow: {
+        sticker: '0 0 0 6px #FFFBF2, 0 14px 30px -12px rgba(30,42,74,.35)',
+        card: '0 10px 34px -14px rgba(30,42,74,.25)',
+      },
+    },
+  },
+};
+</script>
+
+<style>
+  html { scroll-padding-top: 96px; }
+  ::selection { background: #F2A3B1; color: #141E38; }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #F7F0E3; }
+  ::-webkit-scrollbar-thumb { background: #C08048; border-radius: 99px; border: 2px solid #F7F0E3; }
+
+  .dotted-bg {
+    background-image: radial-gradient(rgba(30,42,74,.10) 1.5px, transparent 1.5px);
+    background-size: 26px 26px;
+  }
+  .dotted-bg-light {
+    background-image: radial-gradient(rgba(255,251,242,.12) 1.5px, transparent 1.5px);
+    background-size: 26px 26px;
+  }
+
+  /* marquee */
+  .marquee-track { display: flex; width: max-content; animation: marquee 26s linear infinite; }
+  .marquee-track:hover { animation-play-state: paused; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* floating pearls */
+  @keyframes floaty { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-16px) rotate(8deg); } }
+  .floaty  { animation: floaty 5s ease-in-out infinite; }
+  .floaty2 { animation: floaty 6.5s ease-in-out .8s infinite; }
+  .floaty3 { animation: floaty 7.5s ease-in-out 1.6s infinite; }
+
+  @keyframes wiggle { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+  .wiggle { animation: wiggle 3.5s ease-in-out infinite; }
+
+  @keyframes rise { 0% { transform: translateY(0); opacity: 0; } 12% { opacity: .9; } 100% { transform: translateY(-46vh); opacity: 0; } }
+  .bubble-rise { position: absolute; bottom: -40px; border-radius: 9999px; animation: rise linear infinite; }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(30px) scale(.98); transition: opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1); }
+  .reveal.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+  /* menu card pop */
+  @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .pop { animation: pop .45s cubic-bezier(.22,1,.36,1) both; }
+
+  .sticker { box-shadow: 0 0 0 5px #FFFBF2, 0 12px 26px -12px rgba(30,42,74,.4); }
+
+  .tab-btn.active { background: #1E2A4A; color: #FFFBF2; }
+  .tab-btn.active .tab-dot { background: #F2A3B1; }
+
+  .ig-tile .ig-overlay { opacity: 0; transition: opacity .3s ease; }
+  .ig-tile:hover .ig-overlay { opacity: 1; }
+  .ig-tile img { transition: transform .6s ease; }
+  .ig-tile:hover img { transform: scale(1.07); }
+
+  .heart-btn.liked svg { fill: #F2A3B1; stroke: #F2A3B1; transform: scale(1.15); }
+  .heart-btn svg { transition: transform .25s cubic-bezier(.34,1.56,.64,1), fill .2s, stroke .2s; }
+</style>
+</head>
+
+<body class="font-body bg-cream text-navy antialiased overflow-x-hidden">
+
 
 <!-- ══════════ TOP BAR ══════════ -->
 <div class="topbar">
