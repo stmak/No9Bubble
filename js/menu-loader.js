@@ -1,12 +1,12 @@
 /**
  * Menu Loader - Loads menu data from CSV and generates menu structure
- * Images are loaded from cms/images/{id}.jpg where id is the menu item ID
+ * Images are loaded from cms/images/{id}.png where id is the menu item ID
  */
 
 const MENU_CONFIG = {
   csvPath: 'cms/data/menu.csv',
   imagePath: 'cms/images/',
-  imageExtension: '.jpg',
+  imageExtension: '.png',
   toppingPrice: 0.90,
   toppings: [
     'Strawberry', 'Banana', 'Sprinkles', 'Smarties', 'Oreo Crumble',
