@@ -190,7 +190,7 @@ function setupModalListeners() {
       extras.join('.')
     ].join('|');
     
-    window.CartSystem.addToCart({
+    const lineItem = {
       key,
       name: M.item.n,
       emoji: M.item.e,
@@ -198,7 +198,14 @@ function setupModalListeners() {
       tops,
       unit,
       qty: M.qty
-    });
+    };
+    
+    // Use CartSystem if available, otherwise use addToCart directly
+    if (window.CartSystem && window.CartSystem.addToCart) {
+      window.CartSystem.addToCart(lineItem);
+    } else if (typeof addToCart === 'function') {
+      addToCart(lineItem);
+    }
     
     document.getElementById('modal').classList.remove('show');
   });
