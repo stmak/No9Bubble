@@ -9,9 +9,9 @@ cms/
 ├── data/
 │   └── menu.csv          # Menu items data (51 unique items)
 └── images/               # Product images folder
-    ├── brown-sugar-1.jpg
-    ├── brown-sugar-2.jpg
-    ├── milk-tea-1.jpg
+    ├── brown-sugar-1.png
+    ├── brown-sugar-2.png
+    ├── milk-tea-1.png
     └── ... (all 51 items)
 ```
 
@@ -29,15 +29,15 @@ Each of the 51 menu items has a **unique ID** following the pattern: `{category}
 - **Coffee & Hot Drinks**: `coffee-1` through `coffee-7` (7 items)
 
 ## Image Naming Convention
-Images must be named exactly as the menu item ID with `.jpg` extension:
-- `brown-sugar-1.jpg` → Brown Sugar Bubble Milk Tea
-- `brown-sugar-2.jpg` → Brown Sugar Bubble Milk
-- `milk-tea-1.jpg` → Strawberry Milk Bubble Tea
-- `fruit-tea-5.jpg` → Watermelon Iced Fruit Tea
-- `waffle-3.jpg` → Lotus Biscoff Bubble Waffle
-- `coffee-1.jpg` → No.9 Coffee
+Images must be named exactly as the menu item ID with `.png` extension:
+- `brown-sugar-1.png` → Brown Sugar Bubble Milk Tea
+- `brown-sugar-2.png` → Brown Sugar Bubble Milk
+- `milk-tea-1.png` → Strawberry Milk Bubble Tea
+- `fruit-tea-5.png` → Watermelon Iced Fruit Tea
+- `waffle-3.png` → Lotus Biscoff Bubble Waffle
+- `coffee-1.png` → No.9 Coffee
 
-**Total: 51 unique JPG files needed**
+**Total: 51 unique PNG files needed**
 
 ## CSV File Format
 Location: `cms/data/menu.csv`
@@ -66,9 +66,9 @@ Edit `cms/data/menu.csv`:
 - Use the format `{category-prefix}-{number}`
 
 ### 2. Add Images
-Place JPG images in `cms/images/` folder:
-- Name each file exactly as the item's `id` + `.jpg`
-- Example: For item with id `milk-tea-3`, name the file `milk-tea-3.jpg`
+Place PNG images in `cms/images/` folder:
+- Name each file exactly as the item's `id` + `.png`
+- Example: For item with id `milk-tea-3`, name the file `milk-tea-3.png`
 
 ### 3. Test Locally
 ```bash
@@ -87,7 +87,7 @@ Then open `http://localhost:8000` in your browser.
 ## Key Features
 ✅ Menu generated dynamically from CSV  
 ✅ Unique IDs for all 51 items  
-✅ Images loaded automatically based on ID (`{id}.jpg`)  
+✅ Images loaded automatically based on ID (`{id}.png`)  
 ✅ Easy to add/edit/remove items  
 ✅ Modular, maintainable code structure  
 ✅ Categories grouped automatically  

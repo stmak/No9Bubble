@@ -1,1 +1,1 @@
-Nothing should be ignored based on the provided file changes, as they only include source/config files (.md, .csv, .js).
+Nothing should be ignored since the changes only include source files (.js) and a markdown file (.md), which are not build artifacts, dependencies, or temporary files.
