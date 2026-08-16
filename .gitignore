@@ -1,1 +1,1 @@
-Nothing should be ignored since the changes only include source files (.js) and a markdown file (.md), which are not build artifacts, dependencies, or temporary files.
+(css/styles.css, js/favourites.js, js/menu-loader.js, js/menu-renderer.js)

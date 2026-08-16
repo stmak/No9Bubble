@@ -57,7 +57,9 @@ function groupByCategory(items) {
   const categories = {};
   
   items.forEach(item => {
-    const catId = item.id;
+    // Extract category base from ID (e.g., "brown-sugar" from "brown-sugar-1")
+    const catIdMatch = item.id.match(/^([a-z]+-[a-z]+)-\d+$/);
+    const catId = catIdMatch ? catIdMatch[1] : item.category.toLowerCase().replace(/\s+/g, '-');
     const categoryName = item.category;
     const emoji = item.emoji;
     

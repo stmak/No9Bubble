@@ -61,6 +61,9 @@ function renderMenuSections() {
       
       return `
         <article class="mcard">
+          <div class="img-wrap">
+            <img src="${it.image}" alt="${it.n}" onerror="this.onerror=null;this.src='https://via.placeholder.com/300x200?text=${encodeURIComponent(it.n)}';">
+          </div>
           <div class="top">
             <div class="tile">${it.e}</div>
             <h4>${it.n}</h4>
