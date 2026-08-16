@@ -58,12 +58,15 @@ function renderFavourites() {
 // Initialize favourites
 function initFavourites() {
   // Wait for menu to be loaded
-  if (window.MenuRenderer && window.MenuRenderer.getMenu().length > 0) {
-    renderFavourites();
-  } else {
-    // Try again after a short delay
-    setTimeout(initFavourites, 500);
-  }
+  const checkMenu = setInterval(() => {
+    if (window.MenuRenderer && window.MenuRenderer.getMenu().length > 0) {
+      clearInterval(checkMenu);
+      renderFavourites();
+    }
+  }, 100);
+  
+  // Timeout after 5 seconds
+  setTimeout(() => clearInterval(checkMenu), 5000);
 }
 
 // Export for use in other scripts
