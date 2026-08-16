@@ -1,52 +1,52 @@
 id,category,emoji,name,description,size_m,size_l,toppings_included,oat_option,hot_option,ice_option
-brown-sugar,Brown Sugar Series,✨,Brown Sugar Bubble Milk Tea,"Tiger-striped, sweet & creamy — the one that started it all.",5.80,6.80,1,1,1,0
-brown-sugar,Brown Sugar Series,✨,Brown Sugar Bubble Milk,"Creamy brown sugar milk, no tea, loads of chewy boba.",5.80,6.80,1,1,1,0
-brown-sugar,Brown Sugar Series,✨,Brown Sugar Bubble Milk Green Tea,"Classic milk green tea with brown sugar pearls.",5.80,6.80,1,1,1,0
-brown-sugar,Brown Sugar Series,✨,Brown Sugar Latte,"Brown sugar, coffee & milk — cosy & caramel-y.",5.80,6.80,1,1,1,0
-brown-sugar,Brown Sugar Series,✨,Brown Sugar Dalgona Coffee,"Whipped dalgona cloud over milk & brown sugar boba.",5.80,6.80,1,1,1,0
-milk-tea,Milk Bubble Tea,🧋,Strawberry Milk Bubble Tea,"Sweet & tangy strawberries shaken into creamy milk.",5.80,6.80,1,1,1,0
-milk-tea,Milk Bubble Tea,🧋,Matcha Milk Bubble Tea,"Earthy stone-ground matcha, creamy & vibrant.",5.80,6.80,1,1,1,0
-milk-tea,Milk Bubble Tea,🧋,Chocolate Milk Bubble Tea,"Cocoa-rich, smooth & comforting.",5.80,6.80,1,1,1,0
-milk-tea,Milk Bubble Tea,🧋,Taro Milk Bubble Tea,"Rich, creamy & slightly nutty — a cult classic.",5.80,6.80,1,1,1,0
-milk-tea,Milk Bubble Tea,🧋,Mango Milk Bubble Tea,"A burst of tropical sunshine in every sip.",5.80,6.80,1,1,1,0
-milk-tea,Milk Bubble Tea,🧋,Coconut Milk Bubble Tea,"Creamy coconut vibes, straight to the tropics.",5.80,6.80,1,1,1,0
-milk-tea,Milk Bubble Tea,🧋,Honeydew Melon Milk Bubble Tea,"Subtle, sweet & oh-so-refreshing.",5.80,6.80,1,1,1,0
-fruit-tea,Iced Fruit Tea,🍓,Strawberry Iced Fruit Tea,,5.80,6.80,1,0,0,0
-fruit-tea,Iced Fruit Tea,🍓,Lychee Iced Fruit Tea,,5.80,6.80,1,0,0,0
-fruit-tea,Iced Fruit Tea,🍓,Grape Iced Fruit Tea,,5.80,6.80,1,0,0,0
-fruit-tea,Iced Fruit Tea,🍓,Rose Iced Fruit Tea,,5.80,6.80,1,0,0,0
-fruit-tea,Iced Fruit Tea,🍓,Watermelon Iced Fruit Tea,,5.80,6.80,1,0,0,0
-fruit-tea,Iced Fruit Tea,🍓,Honeydew Melon Iced Fruit Tea,,5.80,6.80,1,0,0,0
-fruit-tea,Iced Fruit Tea,🍓,Green Apple Iced Fruit Tea,,5.80,6.80,1,0,0,0
-fruit-tea,Iced Fruit Tea,🍓,Peach & Lychee Iced Fruit Tea,,5.80,6.80,1,0,0,0
-fruit-tea,Iced Fruit Tea,🍓,Mango & Passion Iced Fruit Tea,,5.80,6.80,1,0,0,0
-fruit-tea,Iced Fruit Tea,🍓,Lemon & Lime Iced Fruit Tea,,5.80,6.80,1,0,0,0
-fruit-tea,Iced Fruit Tea,🍓,Honey & Jasmine Iced Fruit Tea,"Delicate, floral & fragrant.",5.80,6.80,1,0,0,0
-slushies,Slushies,🍇,Mango Slushie,"Fresh fruit blended with ice — no tea base",5.40,6.40,1,0,0,0
-slushies,Slushies,🍇,Passion Fruit Slushie,,5.40,6.40,1,0,0,0
-slushies,Slushies,🍇,Strawberry Slushie,,5.40,6.40,1,0,0,0
-slushies,Slushies,🍇,Watermelon Slushie,,5.40,6.40,1,0,0,0
-slushies,Slushies,🍇,Lemon & Mint Slushie,,5.40,6.40,1,0,0,0
-milk-shakes,Milk Shakes,🥤,Ferrero Milkshake,"Hand-spun, thick & loaded",6.60,7.60,1,0,0,0
-milk-shakes,Milk Shakes,🥤,Oreo Milkshake,,6.20,7.20,1,0,0,0
-milk-shakes,Milk Shakes,🥤,Lotus Biscoff Milkshake,,6.20,7.20,1,0,0,0
-milk-shakes,Milk Shakes,🥤,Maltesers Milkshake,,6.20,7.20,1,0,0,0
-milk-shakes,Milk Shakes,🥤,Taro Milkshake,,6.20,7.20,1,0,0,0
-milk-shakes,Milk Shakes,🥤,Mango Milkshake,,5.80,6.80,1,0,0,0
-milk-shakes,Milk Shakes,🥤,Chocolate Milkshake,,5.80,6.80,1,0,0,0
-milk-shakes,Milk Shakes,🥤,Strawberry Milkshake,,5.80,6.80,1,0,0,0
-waffle,Bubble Waffle,🧇,Strawberry Bubble Waffle,"Fresh strawberries, strawberry sauce, sprinkles & fresh cream.",7.50,0,0,0,0,1
-waffle,Bubble Waffle,🧇,Banana Nutella Bubble Waffle,"Fresh banana, Nutella, chocolate sauce & fresh cream.",7.50,0,0,0,0,1
-waffle,Bubble Waffle,🧇,Lotus Biscoff Bubble Waffle,"Biscoff crumble, lotus biscuit, biscoff sauce & fresh cream.",7.50,0,0,0,0,1
-waffle,Bubble Waffle,🧇,Oreo Bubble Waffle,"Oreo crumble, oreo biscuit, chocolate sauce, chocolate wafer & fresh cream.",7.50,0,0,0,0,1
-waffle,Bubble Waffle,🧇,Marshmallow Bubble Waffle,"Toasty marshmallow, sauce & fresh cream.",7.50,0,0,0,0,1
-waffle,Bubble Waffle,🧇,Kinder Bueno Bubble Waffle,"Kinder Bueno, sprinkles, chocolate sauce & fresh cream.",7.50,0,0,0,0,1
-waffle,Bubble Waffle,🧇,Brown Sugar Boba Bubble Waffle,"Tapioca pearls, brown sugar sauce, chocolate wafer roll & fresh cream.",7.50,0,0,0,0,1
-soft-serve,Soft Serve,🍦,Vanilla Soft Serve,"Silky vanilla swirl — pick your sauce & go wild with toppings.",3.80,0,0,0,0,0
-coffee,Coffee & Hot Drinks,☕,No.9 Coffee,"Our signature house blend — the namesake cup.",4.80,5.80,0,1,0,0
-coffee,Coffee & Hot Drinks,☕,Americano (No Milk),,4.90,5.80,0,0,0,0
-coffee,Coffee & Hot Drinks,☕,Vanilla Coffee,,4.80,5.80,0,1,0,0
-coffee,Coffee & Hot Drinks,☕,Coffee Latte,,4.80,5.80,0,1,0,0
-coffee,Coffee & Hot Drinks,☕,Mocha,,4.80,5.80,0,1,0,0
-coffee,Coffee & Hot Drinks,☕,Caramel Coffee,,4.80,5.80,0,1,0,0
-coffee,Coffee & Hot Drinks,☕,Hot Chocolate,"Cosy, creamy & crowned with fresh cream.",4.80,5.80,0,1,0,0
+brown-sugar-1,Brown Sugar Series,✨,Brown Sugar Bubble Milk Tea,"Tiger-striped, sweet & creamy — the one that started it all.",5.80,6.80,1,1,1,0
+brown-sugar-2,Brown Sugar Series,✨,Brown Sugar Bubble Milk,"Creamy brown sugar milk, no tea, loads of chewy boba.",5.80,6.80,1,1,1,0
+brown-sugar-3,Brown Sugar Series,✨,Brown Sugar Bubble Milk Green Tea,Classic milk green tea with brown sugar pearls.,5.80,6.80,1,1,1,0
+brown-sugar-4,Brown Sugar Series,✨,Brown Sugar Latte,"Brown sugar, coffee & milk — cosy & caramel-y.",5.80,6.80,1,1,1,0
+brown-sugar-5,Brown Sugar Series,✨,Brown Sugar Dalgona Coffee,Whipped dalgona cloud over milk & brown sugar boba.,5.80,6.80,1,1,1,0
+milk-tea-1,Milk Bubble Tea,🧋,Strawberry Milk Bubble Tea,Sweet & tangy strawberries shaken into creamy milk.,5.80,6.80,1,1,1,0
+milk-tea-2,Milk Bubble Tea,🧋,Matcha Milk Bubble Tea,"Earthy stone-ground matcha, creamy & vibrant.",5.80,6.80,1,1,1,0
+milk-tea-3,Milk Bubble Tea,🧋,Chocolate Milk Bubble Tea,"Cocoa-rich, smooth & comforting.",5.80,6.80,1,1,1,0
+milk-tea-4,Milk Bubble Tea,🧋,Taro Milk Bubble Tea,"Rich, creamy & slightly nutty — a cult classic.",5.80,6.80,1,1,1,0
+milk-tea-5,Milk Bubble Tea,🧋,Mango Milk Bubble Tea,A burst of tropical sunshine in every sip.,5.80,6.80,1,1,1,0
+milk-tea-6,Milk Bubble Tea,🧋,Coconut Milk Bubble Tea,"Creamy coconut vibes, straight to the tropics.",5.80,6.80,1,1,1,0
+milk-tea-7,Milk Bubble Tea,🧋,Honeydew Melon Milk Bubble Tea,"Subtle, sweet & oh-so-refreshing.",5.80,6.80,1,1,1,0
+fruit-tea-1,Iced Fruit Tea,🍓,Strawberry Iced Fruit Tea,,5.80,6.80,1,0,0,0
+fruit-tea-2,Iced Fruit Tea,🍓,Lychee Iced Fruit Tea,,5.80,6.80,1,0,0,0
+fruit-tea-3,Iced Fruit Tea,🍓,Grape Iced Fruit Tea,,5.80,6.80,1,0,0,0
+fruit-tea-4,Iced Fruit Tea,🍓,Rose Iced Fruit Tea,,5.80,6.80,1,0,0,0
+fruit-tea-5,Iced Fruit Tea,🍓,Watermelon Iced Fruit Tea,,5.80,6.80,1,0,0,0
+fruit-tea-6,Iced Fruit Tea,🍓,Honeydew Melon Iced Fruit Tea,,5.80,6.80,1,0,0,0
+fruit-tea-7,Iced Fruit Tea,🍓,Green Apple Iced Fruit Tea,,5.80,6.80,1,0,0,0
+fruit-tea-8,Iced Fruit Tea,🍓,Peach & Lychee Iced Fruit Tea,,5.80,6.80,1,0,0,0
+fruit-tea-9,Iced Fruit Tea,🍓,Mango & Passion Iced Fruit Tea,,5.80,6.80,1,0,0,0
+fruit-tea-10,Iced Fruit Tea,🍓,Lemon & Lime Iced Fruit Tea,,5.80,6.80,1,0,0,0
+fruit-tea-11,Iced Fruit Tea,🍓,Honey & Jasmine Iced Fruit Tea,"Delicate, floral & fragrant.",5.80,6.80,1,0,0,0
+slushies-1,Slushies,🍇,Mango Slushie,Fresh fruit blended with ice — no tea base,5.40,6.40,1,0,0,0
+slushies-2,Slushies,🍇,Passion Fruit Slushie,,5.40,6.40,1,0,0,0
+slushies-3,Slushies,🍇,Strawberry Slushie,,5.40,6.40,1,0,0,0
+slushies-4,Slushies,🍇,Watermelon Slushie,,5.40,6.40,1,0,0,0
+slushies-5,Slushies,🍇,Lemon & Mint Slushie,,5.40,6.40,1,0,0,0
+milk-shakes-1,Milk Shakes,🥤,Ferrero Milkshake,"Hand-spun, thick & loaded",6.60,7.60,1,0,0,0
+milk-shakes-2,Milk Shakes,🥤,Oreo Milkshake,,6.20,7.20,1,0,0,0
+milk-shakes-3,Milk Shakes,🥤,Lotus Biscoff Milkshake,,6.20,7.20,1,0,0,0
+milk-shakes-4,Milk Shakes,🥤,Maltesers Milkshake,,6.20,7.20,1,0,0,0
+milk-shakes-5,Milk Shakes,🥤,Taro Milkshake,,6.20,7.20,1,0,0,0
+milk-shakes-6,Milk Shakes,🥤,Mango Milkshake,,5.80,6.80,1,0,0,0
+milk-shakes-7,Milk Shakes,🥤,Chocolate Milkshake,,5.80,6.80,1,0,0,0
+milk-shakes-8,Milk Shakes,🥤,Strawberry Milkshake,,5.80,6.80,1,0,0,0
+waffle-1,Bubble Waffle,🧇,Strawberry Bubble Waffle,"Fresh strawberries, strawberry sauce, sprinkles & fresh cream.",7.50,0,0,0,0,1
+waffle-2,Bubble Waffle,🧇,Banana Nutella Bubble Waffle,"Fresh banana, Nutella, chocolate sauce & fresh cream.",7.50,0,0,0,0,1
+waffle-3,Bubble Waffle,🧇,Lotus Biscoff Bubble Waffle,"Biscoff crumble, lotus biscuit, biscoff sauce & fresh cream.",7.50,0,0,0,0,1
+waffle-4,Bubble Waffle,🧇,Oreo Bubble Waffle,"Oreo crumble, oreo biscuit, chocolate sauce, chocolate wafer & fresh cream.",7.50,0,0,0,0,1
+waffle-5,Bubble Waffle,🧇,Marshmallow Bubble Waffle,"Toasty marshmallow, sauce & fresh cream.",7.50,0,0,0,0,1
+waffle-6,Bubble Waffle,🧇,Kinder Bueno Bubble Waffle,"Kinder Bueno, sprinkles, chocolate sauce & fresh cream.",7.50,0,0,0,0,1
+waffle-7,Bubble Waffle,🧇,Brown Sugar Boba Bubble Waffle,"Tapioca pearls, brown sugar sauce, chocolate wafer roll & fresh cream.",7.50,0,0,0,0,1
+soft-serve-1,Soft Serve,🍦,Vanilla Soft Serve,Silky vanilla swirl — pick your sauce & go wild with toppings.,3.80,0,0,0,0,0
+coffee-1,Coffee & Hot Drinks,☕,No.9 Coffee,Our signature house blend — the namesake cup.,4.80,5.80,0,1,0,0
+coffee-2,Coffee & Hot Drinks,☕,Americano (No Milk),,4.90,5.80,0,0,0,0
+coffee-3,Coffee & Hot Drinks,☕,Vanilla Coffee,,4.80,5.80,0,1,0,0
+coffee-4,Coffee & Hot Drinks,☕,Coffee Latte,,4.80,5.80,0,1,0,0
+coffee-5,Coffee & Hot Drinks,☕,Mocha,,4.80,5.80,0,1,0,0
+coffee-6,Coffee & Hot Drinks,☕,Caramel Coffee,,4.80,5.80,0,1,0,0
+coffee-7,Coffee & Hot Drinks,☕,Hot Chocolate,"Cosy, creamy & crowned with fresh cream.",4.80,5.80,0,1,0,0

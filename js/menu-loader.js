@@ -82,7 +82,7 @@ function groupByCategory(items) {
       n: item.name,
       e: item.emoji,
       d: item.description || '',
-      image: `${MENU_CONFIG.imagePath}${item.id}_${categories[catId].items.length}${MENU_CONFIG.imageExtension}`
+      image: `${MENU_CONFIG.imagePath}${item.id}${MENU_CONFIG.imageExtension}`
     };
     
     // Custom sizes for specific items (waffles, soft serve, etc.)
