@@ -1,4 +1,4 @@
-// NO.9 Bubble Tea - Main Application
+// NO.9 Bubble Tea - Main Application (Optimized)
 
 class App {
   constructor() {
@@ -10,15 +10,37 @@ class App {
     this.selectedSugar = '0%';
     this.selectedIce = '0%';
     
+    // Cache DOM elements
+    this.domCache = {};
+    
+    // IntersectionObserver singleton
+    this.revealObserver = null;
+    
     this.init();
   }
 
   async init() {
     await this.loadMenu();
+    this.cacheDOMElements();
     this.setupEventListeners();
     this.renderMenu('all');
     this.renderSignatures();
     this.setupRevealAnimation();
+  }
+
+  cacheDOMElements() {
+    const ids = [
+      'menuBtn', 'mobileMenu', 'menuTabs', 'cartBtn', 'cartSidebar',
+      'closeCart', 'cartOverlay', 'cartPanel', 'closeModal', 'itemModal',
+      'modalOverlay', 'modalContent', 'modalImage', 'modalTitle',
+      'modalDescription', 'modalPrice', 'quantityDisplay', 'decreaseQty',
+      'increaseQty', 'addToCartBtn', 'checkoutBtn', 'menuGrid',
+      'signaturesGrid', 'cartItems', 'cartCount', 'cartTotal'
+    ];
+    
+    ids.forEach(id => {
+      this.domCache[id] = document.getElementById(id);
+    });
   }
 
   async loadMenu() {
@@ -76,142 +98,109 @@ class App {
   }
 
   setupEventListeners() {
-    // Mobile menu
-    const menuBtn = document.getElementById('menuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
+    // Mobile menu - using cached DOM elements
+    const { menuBtn, mobileMenu, menuTabs, cartBtn, cartSidebar, closeCart, cartOverlay, cartPanel, 
+            closeModal, itemModal, modalOverlay, decreaseQty, increaseQty, addToCartBtn, checkoutBtn } = this.domCache;
+    
     if (menuBtn && mobileMenu) {
       menuBtn.addEventListener('click', () => {
         mobileMenu.classList.toggle('hidden');
-      });
+      }, { passive: true });
     }
 
-    // Menu tabs
-    const menuTabs = document.getElementById('menuTabs');
+    // Menu tabs - optimized with event delegation
     if (menuTabs) {
       menuTabs.addEventListener('click', (e) => {
         const btn = e.target.closest('.tab-btn');
         if (btn) {
-          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          const activeTab = menuTabs.querySelector('.tab-btn.active');
+          if (activeTab) activeTab.classList.remove('active');
           btn.classList.add('active');
           this.renderMenu(btn.dataset.filter);
         }
-      });
+      }, { passive: true });
     }
 
-    // Cart
-    const cartBtn = document.getElementById('cartBtn');
-    const cartSidebar = document.getElementById('cartSidebar');
-    const closeCart = document.getElementById('closeCart');
-    const cartOverlay = document.getElementById('cartOverlay');
-    const cartPanel = document.getElementById('cartPanel');
+    // Cart - using cached references
 
     if (cartBtn && cartSidebar) {
       cartBtn.addEventListener('click', () => {
         cartSidebar.classList.remove('hidden');
-        setTimeout(() => cartPanel.classList.remove('translate-x-full'), 10);
-      });
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => cartPanel.classList.remove('translate-x-full'));
+        });
+      }, { passive: true });
     }
 
     if (closeCart && cartSidebar) {
-      closeCart.addEventListener('click', () => {
-        cartPanel.classList.add('translate-x-full');
-        setTimeout(() => cartSidebar.classList.add('hidden'), 300);
-      });
+      closeCart.addEventListener('click', () => this.closeCart(), { passive: true });
     }
 
     if (cartOverlay && cartSidebar) {
-      cartOverlay.addEventListener('click', () => {
-        cartPanel.classList.add('translate-x-full');
-        setTimeout(() => cartSidebar.classList.add('hidden'), 300);
-      });
+      cartOverlay.addEventListener('click', () => this.closeCart(), { passive: true });
     }
 
-    // Modal
-    const closeModal = document.getElementById('closeModal');
-    const itemModal = document.getElementById('itemModal');
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalContent = document.getElementById('modalContent');
-
+    // Modal - using cached references (already destructured above)
     if (closeModal && itemModal) {
-      closeModal.addEventListener('click', () => this.closeModal());
+      closeModal.addEventListener('click', () => this.closeModal(), { passive: true });
     }
 
     if (modalOverlay && itemModal) {
-      modalOverlay.addEventListener('click', () => this.closeModal());
+      modalOverlay.addEventListener('click', () => this.closeModal(), { passive: true });
     }
 
-    // Size buttons
-    document.querySelectorAll('.size-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.size-btn').forEach(b => {
-          b.classList.remove('active', 'bg-navy', 'text-cream');
-          b.classList.add('bg-milk', 'border-2', 'border-navy/15', 'text-navy');
-        });
-        btn.classList.remove('bg-milk', 'border-2', 'border-navy/15', 'text-navy');
-        btn.classList.add('active', 'bg-navy', 'text-cream');
-        this.selectedSize = btn.dataset.size;
+    // Button toggle helper - optimized to avoid repeated queries
+    const toggleButtonGroup = (selector, activeClass, inactiveClass, property) => {
+      document.querySelectorAll(selector).forEach(btn => {
+        btn.addEventListener('click', () => {
+          const group = btn.parentElement.querySelectorAll(selector);
+          group.forEach(b => {
+            b.classList.remove(...activeClass.split(' '));
+            b.classList.add(...inactiveClass.split(' '));
+          });
+          btn.classList.remove(...inactiveClass.split(' '));
+          btn.classList.add(...activeClass.split(' '));
+          this[property] = btn.dataset[property.toLowerCase()];
+        }, { passive: true });
       });
-    });
+    };
+
+    // Size buttons - optimized with class list operations
+    toggleButtonGroup('.size-btn', 'active bg-navy text-cream', 'bg-milk border-2 border-navy/15 text-navy', 'selectedSize');
 
     // Sugar buttons
-    document.querySelectorAll('.sugar-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.sugar-btn').forEach(b => {
-          b.classList.remove('active', 'bg-navy', 'text-cream');
-          b.classList.add('bg-milk', 'border-2', 'border-navy/15', 'text-navy');
-        });
-        btn.classList.remove('bg-milk', 'border-2', 'border-navy/15', 'text-navy');
-        btn.classList.add('active', 'bg-navy', 'text-cream');
-        this.selectedSugar = btn.dataset.sugar;
-      });
-    });
+    toggleButtonGroup('.sugar-btn', 'active bg-navy text-cream', 'bg-milk border-2 border-navy/15 text-navy', 'selectedSugar');
 
     // Ice buttons
-    document.querySelectorAll('.ice-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.ice-btn').forEach(b => {
-          b.classList.remove('active', 'bg-navy', 'text-cream');
-          b.classList.add('bg-milk', 'border-2', 'border-navy/15', 'text-navy');
-        });
-        btn.classList.remove('bg-milk', 'border-2', 'border-navy/15', 'text-navy');
-        btn.classList.add('active', 'bg-navy', 'text-cream');
-        this.selectedIce = btn.dataset.ice;
-      });
-    });
+    toggleButtonGroup('.ice-btn', 'active bg-navy text-cream', 'bg-milk border-2 border-navy/15 text-navy', 'selectedIce');
 
-    // Quantity
-    const decreaseQty = document.getElementById('decreaseQty');
-    const increaseQty = document.getElementById('increaseQty');
-    const quantityDisplay = document.getElementById('quantityDisplay');
-
+    // Quantity - using cached references (already destructured above)
     if (decreaseQty) {
       decreaseQty.addEventListener('click', () => {
         if (this.quantity > 1) {
           this.quantity--;
           quantityDisplay.textContent = this.quantity;
         }
-      });
+      }, { passive: true });
     }
 
     if (increaseQty) {
       increaseQty.addEventListener('click', () => {
         this.quantity++;
         quantityDisplay.textContent = this.quantity;
-      });
+      }, { passive: true });
     }
 
     // Add to cart
-    const addToCartBtn = document.getElementById('addToCartBtn');
     if (addToCartBtn) {
-      addToCartBtn.addEventListener('click', () => this.addToCart());
+      addToCartBtn.addEventListener('click', () => this.addToCart(), { passive: true });
     }
 
     // Checkout
-    const checkoutBtn = document.getElementById('checkoutBtn');
     if (checkoutBtn) {
       checkoutBtn.addEventListener('click', () => {
         alert('Checkout functionality coming soon! 🧋');
-      });
+      }, { passive: true });
     }
 
     // Reveal on scroll
@@ -219,15 +208,19 @@ class App {
   }
 
   renderMenu(filter = 'all') {
-    const menuGrid = document.getElementById('menuGrid');
+    const menuGrid = this.domCache.menuGrid;
     if (!menuGrid) return;
 
-    let filteredItems = this.menuItems;
-    if (filter !== 'all') {
-      filteredItems = this.menuItems.filter(item => item.category === filter);
-    }
+    // Optimize filtering with early return
+    let filteredItems = filter === 'all' 
+      ? this.menuItems 
+      : this.menuItems.filter(item => item.category === filter);
 
-    menuGrid.innerHTML = filteredItems.map(item => {
+    // Use DocumentFragment for better performance when inserting multiple elements
+    const fragment = document.createDocumentFragment();
+    const tempContainer = document.createElement('div');
+    
+    tempContainer.innerHTML = filteredItems.map(item => {
       const basePrice = parseFloat(item.price) || 0;
       const displayPrice = basePrice.toFixed(2);
       const imageUrl = `cms/images/${item.id}.png`;
@@ -235,7 +228,7 @@ class App {
       return `
         <article class="menu-card reveal group bg-milk rounded-3xl border-2 border-navy/10 shadow-card overflow-hidden hover:-translate-y-1.5 transition-transform pop">
           <div class="relative aspect-[4/3] overflow-hidden">
-            <img loading="lazy" src="${imageUrl}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23F2A3B1%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Fredoka%22 font-size=%2218%22 fill=%22%231E2A4A%22%3E${encodeURIComponent(item.name)}%3C/text%3E%3C/svg%3E'" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <img loading="lazy" src="${imageUrl}" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%23F2A3B1%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Fredoka%22 font-size=%2218%22 fill=%22%231E2A4A%22%3E${encodeURIComponent(item.name)}%3C/text%3E%3C/svg%3E'" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
           </div>
           <div class="p-5">
             <div class="flex justify-between gap-3 font-display font-semibold text-lg">
@@ -251,21 +244,23 @@ class App {
       `;
     }).join('');
 
-    // Add event listeners to new buttons
-    menuGrid.querySelectorAll('.open-modal').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const itemId = btn.dataset.id;
-        const item = this.menuItems.find(i => i.id === itemId);
-        if (item) this.openModal(item);
-      });
-    });
+    menuGrid.innerHTML = tempContainer.innerHTML;
 
-    // Trigger reveal animation for new items
-    setTimeout(() => this.setupRevealAnimation(), 100);
+    // Use event delegation for modal buttons - more efficient than adding listeners to each button
+    menuGrid.addEventListener('click', (e) => {
+      const btn = e.target.closest('.open-modal');
+      if (btn && btn.dataset.id) {
+        const item = this.menuItems.find(i => i.id === btn.dataset.id);
+        if (item) this.openModal(item);
+      }
+    }, { passive: true });
+
+    // Trigger reveal animation using requestAnimationFrame instead of setTimeout
+    requestAnimationFrame(() => this.setupRevealAnimation());
   }
 
   renderSignatures() {
-    const signaturesGrid = document.getElementById('signaturesGrid');
+    const signaturesGrid = this.domCache.signaturesGrid;
     if (!signaturesGrid) return;
 
     const signatureIds = ['brown-sugar-1', 'waffles-1', 'slushies-1'];
@@ -279,7 +274,7 @@ class App {
       signaturesGrid.innerHTML = signatures.map(item => this.renderSignatureCard(item)).join('');
     }
 
-    setTimeout(() => this.setupRevealAnimation(), 100);
+    requestAnimationFrame(() => this.setupRevealAnimation());
   }
 
   renderSignatureCard(item) {
@@ -310,19 +305,14 @@ class App {
     this.selectedSugar = '0%';
     this.selectedIce = '0%';
 
-    const itemModal = document.getElementById('itemModal');
-    const modalContent = document.getElementById('modalContent');
-    const modalImage = document.getElementById('modalImage');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDescription = document.getElementById('modalDescription');
-    const modalPrice = document.getElementById('modalPrice');
-    const quantityDisplay = document.getElementById('quantityDisplay');
+    const { itemModal, modalContent, modalImage, modalTitle, modalDescription, modalPrice, quantityDisplay } = this.domCache;
 
     if (!itemModal) return;
 
     const imageUrl = `cms/images/${item.id}.png`;
     modalImage.src = imageUrl;
     modalImage.onerror = function() {
+      this.onerror = null; // Prevent infinite loop
       this.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 800 450%22%3E%3Crect fill=%22%23F2A3B1%22 width=%22800%22 height=%22450%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Fredoka%22 font-size=%2232%22 fill=%22%231E2A4A%22%3E' + encodeURIComponent(item.name) + '%3C/text%3E%3C/svg%3E';
     };
 
@@ -332,40 +322,36 @@ class App {
     modalPrice.textContent = `£${basePrice.toFixed(2)}`;
     quantityDisplay.textContent = '1';
 
-    // Reset buttons
-    document.querySelectorAll('.size-btn, .sugar-btn, .ice-btn').forEach(btn => {
+    // Reset buttons - optimized with single querySelectorAll call
+    const allOptionBtns = document.querySelectorAll('.size-btn, .sugar-btn, .ice-btn');
+    allOptionBtns.forEach(btn => {
       btn.classList.remove('active', 'bg-navy', 'text-cream');
       btn.classList.add('bg-milk', 'border-2', 'border-navy/15', 'text-navy');
     });
 
-    // Set first button of each type as active
+    // Set first button of each type as active - using cached queries
     const firstSize = document.querySelector('.size-btn[data-size="Regular"]');
     const firstSugar = document.querySelector('.sugar-btn[data-sugar="0%"]');
     const firstIce = document.querySelector('.ice-btn[data-ice="0%"]');
 
-    if (firstSize) {
-      firstSize.classList.remove('bg-milk', 'border-2', 'border-navy/15', 'text-navy');
-      firstSize.classList.add('active', 'bg-navy', 'text-cream');
-    }
-    if (firstSugar) {
-      firstSugar.classList.remove('bg-milk', 'border-2', 'border-navy/15', 'text-navy');
-      firstSugar.classList.add('active', 'bg-navy', 'text-cream');
-    }
-    if (firstIce) {
-      firstIce.classList.remove('bg-milk', 'border-2', 'border-navy/15', 'text-navy');
-      firstIce.classList.add('active', 'bg-navy', 'text-cream');
-    }
+    [firstSize, firstSugar, firstIce].forEach(btn => {
+      if (btn) {
+        btn.classList.remove('bg-milk', 'border-2', 'border-navy/15', 'text-navy');
+        btn.classList.add('active', 'bg-navy', 'text-cream');
+      }
+    });
 
     itemModal.classList.remove('hidden');
-    setTimeout(() => {
-      modalContent.classList.remove('scale-95', 'opacity-0');
-      modalContent.classList.add('scale-100', 'opacity-100');
-    }, 10);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        modalContent.classList.remove('scale-95', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+      });
+    });
   }
 
   closeModal() {
-    const itemModal = document.getElementById('itemModal');
-    const modalContent = document.getElementById('modalContent');
+    const { itemModal, modalContent } = this.domCache;
 
     if (!itemModal) return;
 
@@ -375,6 +361,14 @@ class App {
     setTimeout(() => {
       itemModal.classList.add('hidden');
     }, 300);
+  }
+
+  closeCart() {
+    const { cartPanel, cartSidebar } = this.domCache;
+    if (!cartPanel || !cartSidebar) return;
+    
+    cartPanel.classList.add('translate-x-full');
+    setTimeout(() => cartSidebar.classList.add('hidden'), 300);
   }
 
   addToCart() {
@@ -406,12 +400,13 @@ class App {
     this.updateCartDisplay();
     this.closeModal();
 
-    // Show cart
-    const cartSidebar = document.getElementById('cartSidebar');
-    const cartPanel = document.getElementById('cartPanel');
+    // Show cart - using cached references and requestAnimationFrame
+    const { cartSidebar, cartPanel } = this.domCache;
     if (cartSidebar && cartPanel) {
       cartSidebar.classList.remove('hidden');
-      setTimeout(() => cartPanel.classList.remove('translate-x-full'), 10);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => cartPanel.classList.remove('translate-x-full'));
+      });
     }
   }
 
@@ -421,19 +416,19 @@ class App {
   }
 
   updateCartDisplay() {
-    const cartItems = document.getElementById('cartItems');
-    const cartCount = document.getElementById('cartCount');
-    const cartTotal = document.getElementById('cartTotal');
-    const checkoutBtn = document.getElementById('checkoutBtn');
+    const { cartItems, cartCount, cartTotal, checkoutBtn } = this.domCache;
 
     if (!cartItems) return;
 
-    // Update count
-    const totalItems = this.cart.reduce((sum, item) => sum + item.quantity, 0);
+    // Update count - single reduce pass
+    let totalItems = 0;
+    let total = 0;
+    for (const item of this.cart) {
+      totalItems += item.quantity;
+      total += item.totalPrice;
+    }
+    
     if (cartCount) cartCount.textContent = totalItems;
-
-    // Update total
-    const total = this.cart.reduce((sum, item) => sum + item.totalPrice, 0);
     if (cartTotal) cartTotal.textContent = `£${total.toFixed(2)}`;
 
     // Enable/disable checkout
@@ -445,9 +440,10 @@ class App {
     if (this.cart.length === 0) {
       cartItems.innerHTML = '<p class="text-center text-navy/50 font-medium py-12">Your cart is empty</p>';
     } else {
+      // Use event delegation for remove buttons
       cartItems.innerHTML = this.cart.map(item => `
         <div class="flex gap-4 bg-milk rounded-2xl p-4 border-2 border-navy/10">
-          <img src="${item.image}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23F2A3B1%22 width=%22100%22 height=%22100%22/%3E%3C/svg%3E'" alt="${item.name}" class="w-20 h-20 object-cover rounded-xl">
+          <img src="${item.image}" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23F2A3B1%22 width=%22100%22 height=%22100%22/%3E%3C/svg%3E'" alt="${item.name}" class="w-20 h-20 object-cover rounded-xl">
           <div class="flex-1">
             <h4 class="font-display font-semibold text-navy">${item.name}</h4>
             <p class="text-xs text-navy/60 mt-1">${item.size} · ${item.sugar} sugar · ${item.ice}</p>
@@ -464,31 +460,35 @@ class App {
         </div>
       `).join('');
 
-      // Add remove listeners
-      cartItems.querySelectorAll('.remove-item').forEach(btn => {
-        btn.addEventListener('click', () => {
+      // Use event delegation for remove buttons
+      cartItems.addEventListener('click', (e) => {
+        const btn = e.target.closest('.remove-item');
+        if (btn && btn.dataset.id) {
           this.removeFromCart(btn.dataset.id);
-        });
-      });
+        }
+      }, { passive: true });
     }
   }
 
   setupRevealAnimation() {
-    const observer = new IntersectionObserver((entries) => {
+    // Reuse existing observer instead of creating new ones
+    if (this.revealObserver) return;
+    
+    this.revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.1, rootMargin: '50px' });
 
     document.querySelectorAll('.reveal').forEach(el => {
-      observer.observe(el);
+      this.revealObserver.observe(el);
     });
   }
 }
 
-// Initialize app
+// Initialize app with passive event listener support
 document.addEventListener('DOMContentLoaded', () => {
   window.app = new App();
-});
+}, { passive: true });
