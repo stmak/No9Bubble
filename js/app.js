@@ -561,20 +561,25 @@ class App {
     if (this.cart.length === 0) return;
 
     // Build order message
-    let message = 'New Order - NO.9 Bubble Tea\n\n';
-    
+    let message = '*NEW ORDER - NO.9 BUBBLE TEA!*\n\n';
+
     this.cart.forEach((item, index) => {
-      message += `${index + 1}. ${item.name}\n`;
+      message += `*${index + 1}. ${item.name}*\n`;
       message += `   Size: ${item.size} | Sugar: ${item.sugar} | Ice: ${item.ice}\n`;
-      message += `   Qty: ${item.quantity} × £${item.unitPrice.toFixed(2)} = £${item.totalPrice.toFixed(2)}\n\n`;
+      message += `   Qty: ${item.quantity} x £${item.unitPrice.toFixed(2)} = £${item.totalPrice.toFixed(2)}\n\n`;
     });
 
     // Calculate total
     const total = this.cart.reduce((sum, item) => sum + item.totalPrice, 0);
-    message += `*Total: £${total.toFixed(2)}*\n\n`;
-    message += 'Order heads-up! Please wait for our WhatsApp confirmation before heading to the shop\n\nAlso, let us know if you have any allergies when placing your order — we\'ve got you!';
-
+    message += `*TOTAL: £${total.toFixed(2)}*\n\n`;
+    message += `*ORDER HEADS-UP!* Please wait for our WhatsApp confirmation before heading to the shop.\n\nAlso, let us know if you have any allergies when placing your order - we've got you!`;
     // Encode for WhatsApp
+
+
+
+
+
+
     const encodedMessage = encodeURIComponent(message);
     
     // Open WhatsApp with pre-filled message
