@@ -309,27 +309,38 @@ class App {
 
   renderSignatures() {
     const signaturesGrid = this.domCache.signaturesGrid;
-    if (!signaturesGrid) return;
+    if (!signaturesGrid) {
+      console.error('signaturesGrid element not found in DOM');
+      return;
+    }
 
     // Get popular items by ID first
     const signatureIds = ['brown-sugar-1', 'waffle-1', 'slushies-1'];
     let signatures = signatureIds.map(id => this.menuItems.find(i => i.id === id)).filter(Boolean);
 
+    console.log('Signatures found by ID:', signatures.length, signatures.map(s => s.name));
+
     // If specific IDs not found, get top items by different criteria
     if (signatures.length < 3) {
       // Get first item from Brown Sugar, Waffles, and Slushies categories
-      const brownSugar = this.menuItems.find(i => i.category && i.category.includes('Brown Sugar'));
-      const waffle = this.menuItems.find(i => i.category && i.category.includes('Waffle'));
-      const slushie = this.menuItems.find(i => i.category && i.category.includes('Slushie'));
+      const brownSugar = this.menuItems.find(i => i.category && (i.category.includes('Brown Sugar') || i.category.includes('brown-sugar')));
+      const waffle = this.menuItems.find(i => i.category && (i.category.includes('Waffle') || i.category.includes('waffle')));
+      const slushie = this.menuItems.find(i => i.category && (i.category.includes('Slushie') || i.category.includes('Slushies') || i.category.includes('slushie') || i.category.includes('slushies')));
+      
+      console.log('Fallback - Brown Sugar:', brownSugar ? brownSugar.name : 'NOT FOUND');
+      console.log('Fallback - Waffle:', waffle ? waffle.name : 'NOT FOUND');
+      console.log('Fallback - Slushie:', slushie ? slushie.name : 'NOT FOUND');
       
       signatures = [brownSugar, waffle, slushie].filter(Boolean);
     }
     
     // Fallback to first 3 items if still not enough
     if (signatures.length < 3) {
+      console.log('Using first 3 menu items as fallback');
       signatures = this.menuItems.slice(0, 3);
     }
 
+    console.log('Rendering', signatures.length, 'signature items');
     signaturesGrid.innerHTML = signatures.map(item => this.renderSignatureCard(item)).join('');
     requestAnimationFrame(() => this.setupRevealAnimation());
   }
