@@ -20,8 +20,8 @@ class App {
   }
 
   async init() {
-    await this.loadMenu();
     this.cacheDOMElements();
+    await this.loadMenu();
     this.setupEventListeners();
     this.renderMenu('all');
     this.renderSignatures();
@@ -49,9 +49,12 @@ class App {
       const response = await fetch('cms/data/menu.csv');
       const csvText = await response.text();
       this.menuItems = this.parseCSV(csvText);
+      console.log('Menu loaded from CSV:', this.menuItems.length, 'items');
+      console.log('First few IDs:', this.menuItems.slice(0, 5).map(i => i.id));
     } catch (error) {
       console.error('Error loading menu:', error);
       this.menuItems = this.getFallbackMenu();
+      console.log('Using fallback menu:', this.menuItems.length, 'items');
     }
   }
 
@@ -314,11 +317,15 @@ class App {
       return;
     }
 
+    // Debug: log all menu item IDs
+    console.log('All menu item IDs:', this.menuItems.map(i => i.id));
+    console.log('Total menu items loaded:', this.menuItems.length);
+
     // Get popular items by ID first
     const signatureIds = ['brown-sugar-1', 'waffle-1', 'slushies-1'];
     let signatures = signatureIds.map(id => this.menuItems.find(i => i.id === id)).filter(Boolean);
 
-    console.log('Signatures found by ID:', signatures.length, signatures.map(s => s.name));
+    console.log('Signatures found by ID:', signatures.length, signatures.map(s => `${s.id}: ${s.name}`));
 
     // If specific IDs not found, get top items by different criteria
     if (signatures.length < 3) {
@@ -327,9 +334,9 @@ class App {
       const waffle = this.menuItems.find(i => i.category && (i.category.includes('Waffle') || i.category.includes('waffle')));
       const slushie = this.menuItems.find(i => i.category && (i.category.includes('Slushie') || i.category.includes('Slushies') || i.category.includes('slushie') || i.category.includes('slushies')));
       
-      console.log('Fallback - Brown Sugar:', brownSugar ? brownSugar.name : 'NOT FOUND');
-      console.log('Fallback - Waffle:', waffle ? waffle.name : 'NOT FOUND');
-      console.log('Fallback - Slushie:', slushie ? slushie.name : 'NOT FOUND');
+      console.log('Fallback - Brown Sugar:', brownSugar ? `${brownSugar.id}: ${brownSugar.name}` : 'NOT FOUND');
+      console.log('Fallback - Waffle:', waffle ? `${waffle.id}: ${waffle.name}` : 'NOT FOUND');
+      console.log('Fallback - Slushie:', slushie ? `${slushie.id}: ${slushie.name}` : 'NOT FOUND');
       
       signatures = [brownSugar, waffle, slushie].filter(Boolean);
     }
@@ -340,7 +347,14 @@ class App {
       signatures = this.menuItems.slice(0, 3);
     }
 
-    console.log('Rendering', signatures.length, 'signature items');
+    console.log('Final signatures to render:', signatures.length, signatures.map(s => s.name));
+    
+    if (signatures.length === 0) {
+      console.error('No signatures available to render!');
+      signaturesGrid.innerHTML = '<p class="text-center col-span-full">Loading menu items...</p>';
+      return;
+    }
+    
     signaturesGrid.innerHTML = signatures.map(item => this.renderSignatureCard(item)).join('');
     requestAnimationFrame(() => this.setupRevealAnimation());
   }
