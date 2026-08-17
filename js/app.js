@@ -319,40 +319,30 @@ class App {
       return;
     }
 
-    // Debug: log all menu item IDs
-    console.log('All menu item IDs:', this.menuItems.map(i => i.id));
-    console.log('Total menu items loaded:', this.menuItems.length);
-
-    // Get popular items by ID first
+    // Get popular items by ID first - these are our featured signature items
     const signatureIds = ['brown-sugar-1', 'waffle-1', 'slushies-1'];
     let signatures = signatureIds.map(id => this.menuItems.find(i => i.id === id)).filter(Boolean);
 
-    console.log('Signatures found by ID:', signatures.length, signatures.map(s => `${s.id}: ${s.name}`));
-
-    // If specific IDs not found, get top items by different criteria
+    // Fallback: If specific IDs not found, get first item from key categories
     if (signatures.length < 3) {
-      // Get first item from Brown Sugar, Waffles, and Slushies categories
-      const brownSugar = this.menuItems.find(i => i.category && (i.category.includes('Brown Sugar') || i.category.includes('brown-sugar')));
-      const waffle = this.menuItems.find(i => i.category && (i.category.includes('Waffle') || i.category.includes('waffle')));
-      const slushie = this.menuItems.find(i => i.category && (i.category.includes('Slushie') || i.category.includes('Slushies') || i.category.includes('slushie') || i.category.includes('slushies')));
+      const brownSugar = this.menuItems.find(i => i.id && i.id.startsWith('brown-sugar'));
+      const waffle = this.menuItems.find(i => i.id && i.id.startsWith('waffle'));
+      const slushie = this.menuItems.find(i => i.id && i.id.startsWith('slushies'));
       
-      console.log('Fallback - Brown Sugar:', brownSugar ? `${brownSugar.id}: ${brownSugar.name}` : 'NOT FOUND');
-      console.log('Fallback - Waffle:', waffle ? `${waffle.id}: ${waffle.name}` : 'NOT FOUND');
-      console.log('Fallback - Slushie:', slushie ? `${slushie.id}: ${slushie.name}` : 'NOT FOUND');
-      
-      signatures = [brownSugar, waffle, slushie].filter(Boolean);
+      if (brownSugar && !signatures.find(s => s.id === brownSugar.id)) signatures.push(brownSugar);
+      if (waffle && !signatures.find(s => s.id === waffle.id)) signatures.push(waffle);
+      if (slushie && !signatures.find(s => s.id === slushie.id)) signatures.push(slushie);
     }
     
-    // Fallback to first 3 items if still not enough
+    // Final fallback: use first 3 items if still not enough
     if (signatures.length < 3) {
-      console.log('Using first 3 menu items as fallback');
       signatures = this.menuItems.slice(0, 3);
     }
 
-    console.log('Final signatures to render:', signatures.length, signatures.map(s => s.name));
+    // Trim to exactly 3 items
+    signatures = signatures.slice(0, 3);
     
     if (signatures.length === 0) {
-      console.error('No signatures available to render!');
       // Hide the entire section if no signatures
       if (signaturesSection) {
         signaturesSection.style.display = 'none';
