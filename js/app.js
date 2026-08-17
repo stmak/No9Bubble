@@ -572,7 +572,7 @@ class App {
     // Calculate total
     const total = this.cart.reduce((sum, item) => sum + item.totalPrice, 0);
     message += `*Total: £${total.toFixed(2)}*\n\n`;
-    message += '🧋 Order heads-up! Please wait for our WhatsApp confirmation before heading to the shop 💬✨\n\nAlso, let us know if you have any allergies when placing your order — we've got you! 💗';
+    message += '🧋 Order heads-up! Please wait for our WhatsApp confirmation before heading to the shop 💬✨\n\nAlso, let us know if you have any allergies when placing your order — we\'ve got you! 💗';
 
     // Encode for WhatsApp
     const encodedMessage = encodeURIComponent(message);
