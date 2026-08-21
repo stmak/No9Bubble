@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Dashboard - NO.9 Bubble Tea</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Security: Prevent clickjacking
+    if (window.self !== window.top) {
+      window.top.location = window.self.location;
+    }
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  
+  <!-- Navigation -->
+  <nav class="bg-white shadow-md border-b-4 border-pink-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <h1 class="text-2xl font-bold text-gray-800">🧋 NO.9 CMS Dashboard</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span id="userInfo" class="text-sm text-gray-600"></span>
+          <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Security Notice -->
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <span class="text-yellow-400">⚠️</span>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            <strong>Security Notice:</strong> This is a client-side demo. For production, implement server-side authentication and file operations.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="mb-6">
+      <div class="border-b border-gray-200">
+        <nav class="-mb-px flex space-x-8">
+          <button onclick="switchTab('menu')" id="tab-menu" class="tab-btn active border-pink-500 text-pink-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+            📋 Menu Editor
+          </button>
+          <button onclick="switchTab('security')" id="tab-security" class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+            🔒 Security Settings
+          </button>
+          <button onclick="switchTab('backup')" id="tab-backup" class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+            💾 Backup & Restore
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Menu Editor Tab -->
+    <div id="menu-tab" class="tab-content">
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold text-gray-800">Menu Items</h2>
+          <button onclick="addNewItem()" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center">
+            <span class="mr-2">➕</span> Add New Item
+          </button>
+        </div>
+
+        <!-- CSV Upload -->
+        <div class="mb-6 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Upload CSV File</label>
+          <input type="file" id="csvUpload" accept=".csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100"/>
+          <p class="mt-1 text-xs text-gray-500">Upload a CSV file to update the entire menu</p>
+        </div>
+
+        <!-- Menu Table -->
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price (M)</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="menuTableBody" class="bg-white divide-y divide-gray-200">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Export Button -->
+        <div class="mt-6 flex justify-end">
+          <button onclick="exportCSV()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center">
+            <span class="mr-2">📥</span> Export Current Menu as CSV
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Settings Tab -->
+    <div id="security-tab" class="tab-content hidden">
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">Security Configuration</h2>
+
+        <!-- Password Change -->
+        <div class="mb-8">
+          <h3 class="text-lg font-semibold text-gray-700 mb-4">Change Password</h3>
+          <form id="passwordForm" class="space-y-4 max-w-md">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+              <input type="password" id="currentPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-200 focus:border-pink-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+              <input type="password" id="newPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-200 focus:border-pink-500" minlength="8" maxlength="128">
+              <p class="mt-1 text-xs text-gray-500">Minimum 8 characters, include uppercase, lowercase, number, and special character</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+              <input type="password" id="confirmPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-200 focus:border-pink-500">
+            </div>
+            <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition-colors">
+              Update Password
+            </button>
+          </form>
+        </div>
+
+        <!-- Session Info -->
+        <div class="mb-8">
+          <h3 class="text-lg font-semibold text-gray-700 mb-4">Session Information</h3>
+          <div class="bg-gray-50 rounded-lg p-4 max-w-md">
+            <div id="sessionInfo" class="space-y-2 text-sm text-gray-600">
+              <!-- Populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Headers Guide -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-700 mb-4">Recommended Server Security Headers</h3>
+          <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+            <pre class="text-green-400 text-xs"><code># Apache (.htaccess)
+Header always set X-Frame-Options "DENY"
+Header always set X-Content-Type-Options "nosniff"
+Header always set X-XSS-Protection "1; mode=block"
+Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; img-src 'self' data: blob:; connect-src 'self'"
+
+# Nginx
+add_header X-Frame-Options "DENY" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-XSS-Protection "1; mode=block" always;
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; img-src 'self' data: blob:; connect-src 'self'" always;</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Backup & Restore Tab -->
+    <div id="backup-tab" class="tab-content hidden">
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">Backup & Restore</h2>
+
+        <!-- Backup -->
+        <div class="mb-8">
+          <h3 class="text-lg font-semibold text-gray-700 mb-4">Create Backup</h3>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p class="text-sm text-blue-700 mb-4">Download a backup of your current menu data</p>
+            <button onclick="exportCSV()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+              📥 Download Menu Backup
+            </button>
+          </div>
+        </div>
+
+        <!-- Restore -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-700 mb-4">Restore from Backup</h3>
+          <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+            <p class="text-sm text-orange-700 mb-4">⚠️ Warning: This will replace your current menu data</p>
+            <input type="file" id="restoreFile" accept=".csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 mb-4"/>
+            <button onclick="restoreFromCSV()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors">
+              ⚠️ Restore from CSV
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-gray-800" id="modalTitle">Edit Menu Item</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+      </div>
+      <form id="editForm" class="space-y-4">
+        <input type="hidden" id="editIndex">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">ID *</label>
+            <input type="text" id="editId" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-200 focus:border-pink-500" required pattern="[a-z0-9-]+">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Emoji</label>
+            <input type="text" id="editEmoji" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-200 focus:border-pink-500">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+          <input type="text" id="editName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-200 focus:border-pink-500" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+          <textarea id="editDescription" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-200 focus:border-pink-500"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+            <input type="text" id="editCategory" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-200 focus:border-pink-500" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Price (Size M) *</label>
+            <input type="number" step="0.01" id="editPriceM" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-200 focus:border-pink-500" required>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Price (Size L)</label>
+          <input type="number" step="0.01" id="editPriceL" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-200 focus:border-pink-500">
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          <div class="flex items-center">
+            <input type="checkbox" id="editToppings" class="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded">
+            <label for="editToppings" class="ml-2 block text-sm text-gray-700">Toppings Included</label>
+          </div>
+          <div class="flex items-center">
+            <input type="checkbox" id="editOat" class="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded">
+            <label for="editOat" class="ml-2 block text-sm text-gray-700">Oat Option</label>
+          </div>
+          <div class="flex items-center">
+            <input type="checkbox" id="editHot" class="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded">
+            <label for="editHot" class="ml-2 block text-sm text-gray-700">Hot Option</label>
+          </div>
+          <div class="flex items-center">
+            <input type="checkbox" id="editIce" class="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded">
+            <label for="editIce" class="ml-2 block text-sm text-gray-700">Ice Option</label>
+          </div>
+        </div>
+        <div class="flex justify-end space-x-4 pt-4">
+          <button type="button" onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Security: Check authentication
+    const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+    
+    function checkAuth() {
+      const session = JSON.parse(localStorage.getItem('cmsSession') || 'null');
+      if (!session) {
+        window.location.href = 'login.html';
+        return null;
+      }
+      
+      if (Date.now() - session.lastActivity > SESSION_TIMEOUT) {
+        localStorage.removeItem('cmsSession');
+        window.location.href = 'login.html';
+        return null;
+      }
+      
+      // Update activity
+      session.lastActivity = Date.now();
+      localStorage.setItem('cmsSession', JSON.stringify(session));
+      
+      return session;
+    }
+
+    // Initialize
+    let menuItems = [];
+    let currentUser = null;
+
+    window.addEventListener('load', () => {
+      currentUser = checkAuth();
+      if (!currentUser) return;
+
+      // Display user info
+      document.getElementById('userInfo').textContent = `👤 ${currentUser.username} (${currentUser.role})`;
+      displaySessionInfo();
+      
+      // Load menu data
+      loadMenuData();
+    });
+
+    // Tab switching
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => {
+        el.classList.remove('active', 'border-pink-500', 'text-pink-600');
+        el.classList.add('border-transparent', 'text-gray-500');
+      });
+      
+      document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-${tabName}`);
+      activeBtn.classList.add('active', 'border-pink-500', 'text-pink-600');
+      activeBtn.classList.remove('border-transparent', 'text-gray-500');
+    }
+
+    // Load menu data from CSV
+    async function loadMenuData() {
+      try {
+        const response = await fetch('../data/menu.csv');
+        const csvText = await response.text();
+        menuItems = parseCSV(csvText);
+        renderMenuTable();
+      } catch (error) {
+        console.error('Error loading menu:', error);
+        alert('Failed to load menu data');
+      }
+    }
+
+    // Parse CSV
+    function parseCSV(csvText) {
+      const lines = csvText.trim().replace(/\r\n/g, '\n').split('\n');
+      const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+      
+      return lines.slice(1).map(line => {
+        const values = line.split(',').map(v => v.trim());
+        const item = {};
+        headers.forEach((header, index) => {
+          item[header] = values[index] || '';
+        });
+        return item;
+      });
+    }
+
+    // Render menu table
+    function renderMenuTable() {
+      const tbody = document.getElementById('menuTableBody');
+      tbody.innerHTML = menuItems.map((item, index) => `
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">${item.id}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.emoji || ''} ${item.name}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.category}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">£${item.size_m}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <button onclick="editItem(${index})" class="text-pink-600 hover:text-pink-900 mr-3">✏️ Edit</button>
+            <button onclick="deleteItem(${index})" class="text-red-600 hover:text-red-900">🗑️ Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Edit item
+    function editItem(index) {
+      const item = menuItems[index];
+      document.getElementById('editIndex').value = index;
+      document.getElementById('editId').value = item.id;
+      document.getElementById('editEmoji').value = item.emoji || '';
+      document.getElementById('editName').value = item.name;
+      document.getElementById('editDescription').value = item.description || '';
+      document.getElementById('editCategory').value = item.category;
+      document.getElementById('editPriceM').value = item.size_m;
+      document.getElementById('editPriceL').value = item.size_l || '';
+      document.getElementById('editToppings').checked = item.toppings_included == '1';
+      document.getElementById('editOat').checked = item.oat_option == '1';
+      document.getElementById('editHot').checked = item.hot_option == '1';
+      document.getElementById('editIce').checked = item.ice_option == '1';
+      
+      document.getElementById('editModal').classList.remove('hidden');
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('editModal').classList.add('hidden');
+      document.getElementById('editForm').reset();
+    }
+
+    // Save edited item
+    document.getElementById('editForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const index = parseInt(document.getElementById('editIndex').value);
+      
+      menuItems[index] = {
+        id: document.getElementById('editId').value,
+        emoji: document.getElementById('editEmoji').value,
+        name: document.getElementById('editName').value,
+        description: document.getElementById('editDescription').value,
+        category: document.getElementById('editCategory').value,
+        size_m: document.getElementById('editPriceM').value,
+        size_l: document.getElementById('editPriceL').value,
+        toppings_included: document.getElementById('editToppings').checked ? '1' : '0',
+        oat_option: document.getElementById('editOat').checked ? '1' : '0',
+        hot_option: document.getElementById('editHot').checked ? '1' : '0',
+        ice_option: document.getElementById('editIce').checked ? '1' : '0'
+      };
+      
+      saveMenuData();
+      renderMenuTable();
+      closeModal();
+    });
+
+    // Delete item
+    function deleteItem(index) {
+      if (confirm('Are you sure you want to delete this item?')) {
+        menuItems.splice(index, 1);
+        saveMenuData();
+        renderMenuTable();
+      }
+    }
+
+    // Add new item
+    function addNewItem() {
+      const newItem = {
+        id: 'new-item-' + Date.now(),
+        emoji: '🧋',
+        name: 'New Menu Item',
+        description: 'Description here',
+        category: 'Uncategorized',
+        size_m: '5.00',
+        size_l: '6.00',
+        toppings_included: '0',
+        oat_option: '0',
+        hot_option: '0',
+        ice_option: '0'
+      };
+      menuItems.push(newItem);
+      saveMenuData();
+      renderMenuTable();
+      editItem(menuItems.length - 1);
+    }
+
+    // Save menu data to CSV
+    function saveMenuData() {
+      const csv = generateCSV();
+      // Note: In production, this should be an API call to save on the server
+      // For demo, we create a download
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'menu.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+      alert('Menu saved! Downloaded CSV file should be uploaded to cms/data/menu.csv');
+    }
+
+    // Generate CSV from menu items
+    function generateCSV() {
+      const headers = ['id', 'category', 'emoji', 'name', 'description', 'size_m', 'size_l', 'toppings_included', 'oat_option', 'hot_option', 'ice_option'];
+      const lines = [headers.join(',')];
+      
+      menuItems.forEach(item => {
+        const values = headers.map(header => {
+          const value = item[header] || '';
+          return value.includes(',') ? `"${value}"` : value;
+        });
+        lines.push(values.join(','));
+      });
+      
+      return lines.join('\n');
+    }
+
+    // Export CSV
+    function exportCSV() {
+      const csv = generateCSV();
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `menu-backup-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // CSV Upload handler
+    document.getElementById('csvUpload').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          menuItems = parseCSV(event.target.result);
+          renderMenuTable();
+          alert('Menu uploaded successfully! Review changes and save.');
+        } catch (error) {
+          alert('Error parsing CSV file');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // Restore from CSV
+    function restoreFromCSV() {
+      const fileInput = document.getElementById('restoreFile');
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('Please select a CSV file');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (confirm('This will replace all current menu data. Continue?')) {
+          try {
+            menuItems = parseCSV(event.target.result);
+            saveMenuData();
+            renderMenuTable();
+            alert('Menu restored successfully!');
+          } catch (error) {
+            alert('Error parsing CSV file');
+          }
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Display session info
+    function displaySessionInfo() {
+      const session = JSON.parse(localStorage.getItem('cmsSession'));
+      if (!session) return;
+      
+      const infoDiv = document.getElementById('sessionInfo');
+      infoDiv.innerHTML = `
+        <p><strong>Username:</strong> ${session.username}</p>
+        <p><strong>Role:</strong> ${session.role}</p>
+        <p><strong>Login Time:</strong> ${new Date(session.loginTime).toLocaleString()}</p>
+        <p><strong>Session ID:</strong> ${session.sessionId}</p>
+        <p><strong>Expires In:</strong> ${Math.round((SESSION_TIMEOUT - (Date.now() - session.lastActivity)) / 60000)} minutes</p>
+      `;
+    }
+
+    // Password change
+    document.getElementById('passwordForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const current = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirm = document.getElementById('confirmPassword').value;
+      
+      if (newPassword !== confirm) {
+        alert('New passwords do not match');
+        return;
+      }
+      
+      if (newPassword.length < 8) {
+        alert('Password must be at least 8 characters');
+        return;
+      }
+      
+      // Validate password strength
+      const hasUpper = /[A-Z]/.test(newPassword);
+      const hasLower = /[a-z]/.test(newPassword);
+      const hasNumber = /[0-9]/.test(newPassword);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
+      
+      if (!hasUpper || !hasLower || !hasNumber || !hasSpecial) {
+        alert('Password must contain uppercase, lowercase, number, and special character');
+        return;
+      }
+      
+      // Note: In production, this should be an API call
+      alert('Password updated successfully! (Demo only - implement server-side in production)');
+      document.getElementById('passwordForm').reset();
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('cmsSession');
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Auto-logout warning
+    setTimeout(() => {
+      const session = JSON.parse(localStorage.getItem('cmsSession') || 'null');
+      if (session && Date.now() - session.lastActivity > SESSION_TIMEOUT - 5 * 60 * 1000) {
+        alert('Your session will expire soon due to inactivity');
+      }
+    }, 60000);
+  </script>
+</body>
+</html>
