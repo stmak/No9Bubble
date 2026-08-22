@@ -57,92 +57,69 @@ class App {
     this.setupEventListeners();
     // Render the full menu grid
     this.renderMenu('all');
+    
     // Render signature/featured items section
     this.renderSignatures();
-    // Initialize scroll reveal animations
-    this.setupRevealAnimation();
-    console.log('App initialized, menu items:', this.menuItems.length);
   }
 
   /**
-   * Cache frequently accessed DOM elements to avoid repeated queries
-   * This improves performance by storing references in domCache object
-   * @returns {void}
+   * Render the signatures/featured items section
    */
-  cacheDOMElements() {
-    // List of all element IDs to cache
-    const ids = [
-      'menuBtn', 'mobileMenu', 'menuTabs', 'cartBtn', 'cartSidebar',
-      'closeCart', 'cartOverlay', 'cartPanel', 'closeModal', 'itemModal',
-      'modalOverlay', 'modalContent', 'modalImage', 'modalTitle',
-      'modalDescription', 'modalPrice', 'quantityDisplay', 'decreaseQty',
-      'increaseQty', 'addToCartBtn', 'checkoutBtn', 'menuGrid',
-      'signaturesGrid', 'cartItems', 'cartCount', 'cartTotal'
-    ];
+  renderSignatures() {
+    const signaturesGrid = this.domCache.signaturesGrid;
+    const signaturesSection = document.getElementById('signatures');
+
+    if (!signaturesGrid || !signaturesSection) return;
+
+    // Get featured items by specific IDs (matching CSV data)
+    const signatureIds = ['brown-sugar-1', 'waffle-1', 'slushies-1'];
     
-    // Store each element reference in the cache object
-    ids.forEach(id => {
-      this.domCache[id] = document.getElementById(id);
-    });
-  }
+    let signatures = signatureIds
+      .map(id => this.menuItems.find(i => i.id === id))
+      .filter(Boolean);
 
-  /**
-   * Load menu data from CSV file with fallback to hardcoded data
-   * @async
-   * @returns {Promise<void>}
-   */
-  async loadMenu() {
-    try {
-      // Fetch menu data from CMS CSV file
-      const response = await fetch('cms/data/menu.csv');
-      const csvText = await response.text();
-      // Parse CSV text into array of menu item objects
-      this.menuItems = this.parseCSV(csvText);
-      console.log('Menu loaded from CSV:', this.menuItems.length, 'items');
-      console.log('First few IDs:', this.menuItems.slice(0, 5).map(i => i.id));
-    } catch (error) {
-      // If CSV loading fails, use fallback menu data
-      console.error('Error loading menu:', error);
-      this.menuItems = this.getFallbackMenu();
-      console.log('Using fallback menu:', this.menuItems.length, 'items');
-    }
-  }
-
-  /**
-   * Parse CSV text into an array of menu item objects
-   * Handles Windows line endings and quoted fields with commas
-   * @param {string} csvText - Raw CSV text content
-   * @returns {Array<Object>} Array of menu item objects
-   */
-  parseCSV(csvText) {
-    // Handle Windows line endings (CRLF) and old Mac line endings (CR)
-    const normalizedText = csvText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-    const lines = normalizedText.trim().split('\n');
-    
-    // Parse header line and normalize to lowercase
-    const headers = this.parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
-
-    // Parse each data line into an object using headers as keys
-    return lines.slice(1).map(line => {
-      const values = this.parseCSVLine(line);
+    // Fallback: If specific IDs not found, get first item from key categories
+    if (signatures.length < 3) {
+      const brownSugar = this.menuItems.find(i => i.id && i.id.startsWith('brown-sugar'));
+      const waffle = this.menuItems.find(i => i.id && i.id.startsWith('waffle'));
+      const slushie = this.menuItems.find(i => i.id && i.id.startsWith('slushies'));
       
-      const item = {};
-      headers.forEach((header, index) => {
-        item[header] = values[index] || '';
-      });
+      if (brownSugar && !signatures.find(s => s.id === brownSugar.id)) signatures.push(brownSugar);
+      if (waffle && !signatures.find(s => s.id === waffle.id)) signatures.push(waffle);
+      if (slushie && !signatures.find(s => s.id === slushie.id)) signatures.push(slushie);
+    }
 
-      // Normalize price based on CSV structure - size_m contains the price
-      if (item.size_m) {
-        item.price = item.size_m;
-      }
-      // Generate ID from name if not present in CSV
-      if (!item.id) {
-        item.id = item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-      }
+    // Second fallback: use first 3 items if still not enough
+    if (signatures.length < 3) {
+      signatures = this.menuItems.slice(0, 3);
+    }
 
-      return item;
+    // Ensure exactly 3 items maximum
+    signatures = signatures.slice(0, 3);
+
+    // Handle empty state - hide section if no signatures available
+    if (signatures.length === 0) {
+      if (signaturesSection) {
+        signaturesSection.style.display = 'none';
+      }
+      return;
+    }
+
+    // Show section and render signature cards
+    if (signaturesSection) {
+      signaturesSection.style.display = 'block';
+    }
+
+    // Render the cards
+    const html = signatures.map(item => this.renderSignatureCard(item)).join('');
+    signaturesGrid.innerHTML = html;
+
+    // Re-setup reveal animation for newly added elements
+    requestAnimationFrame(() => {
+      this.setupRevealAnimation();
     });
   }
+
 
   /**
    * Parse a single CSV line handling quoted fields with commas
