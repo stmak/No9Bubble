@@ -486,7 +486,7 @@ class App {
   renderSignatureCard(item) {
     const basePrice = parseFloat(item.price) || 0;
     const displayPrice = basePrice.toFixed(2);
-    const imageUrl = `cms/images/${item.id}.png`;
+    const imageUrl = `images/${item.id}.png`;
 
     return `
       <article class="reveal group bg-milk rounded-[2rem] p-4 pb-7 border-2 border-navy/10 shadow-card hover:-translate-y-2 hover:rotate-1 transition-transform">
