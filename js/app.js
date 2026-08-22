@@ -465,8 +465,16 @@ class App {
       signaturesSection.style.display = 'block';
     }
     
-    signaturesGrid.innerHTML = signatures.map(item => this.renderSignatureCard(item)).join('');
+    // Render the cards
+    const html = signatures.map(item => this.renderSignatureCard(item)).join('');
+    console.log('Generated HTML length:', html.length);
+    console.log('First 200 chars of HTML:', html.substring(0, 200));
+    
+    signaturesGrid.innerHTML = html;
     console.log('Rendered', signatures.length, 'signature cards');
+    console.log('signaturesGrid innerHTML length:', signaturesGrid.innerHTML.length);
+    
+    // Re-setup reveal animation for newly added elements
     requestAnimationFrame(() => this.setupRevealAnimation());
   }
 
