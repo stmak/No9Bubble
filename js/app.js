@@ -415,41 +415,72 @@ class App {
     const signaturesGrid = this.domCache.signaturesGrid;
     const signaturesSection = document.getElementById('signatures');
     
+    console.group('🔍 DEBUG: renderSignatures()');
+    console.log('signaturesGrid element:', signaturesGrid);
+    console.log('signaturesSection element:', signaturesSection);
+    console.log('Total menuItems loaded:', this.menuItems.length);
+    console.log('All menu item IDs:', this.menuItems.map(i => i.id));
+    
     if (!signaturesGrid) {
-      console.error('signaturesGrid element not found in DOM');
+      console.error('❌ signaturesGrid element not found in DOM');
+      console.groupEnd();
       return;
     }
 
     // Primary: Get featured items by specific IDs (matching CSV/fallback data)
     const signatureIds = ['brown-sugar-1', 'waffles-1', 'slushies-1'];
-    let signatures = signatureIds.map(id => this.menuItems.find(i => i.id === id)).filter(Boolean);
+    console.log('🎯 Searching for signature IDs:', signatureIds);
+    
+    let signatures = signatureIds.map(id => {
+      const found = this.menuItems.find(i => i.id === id);
+      console.log(`  - Looking for "${id}":`, found ? `✅ Found "${found.name}"` : '❌ Not found');
+      return found;
+    }).filter(Boolean);
   
     console.log('Signature search - found:', signatures.length, 'items');
     console.log('Signature IDs matched:', signatures.map(s => s.id));
 
     // First fallback: If specific IDs not found, get first item from key categories
     if (signatures.length < 3) {
+      console.log('⚠️ Less than 3 items found, trying fallback strategy...');
       const brownSugar = this.menuItems.find(i => i.id && i.id.startsWith('brown-sugar'));
       const waffle = this.menuItems.find(i => i.id && i.id.startsWith('waffle'));
       const slushie = this.menuItems.find(i => i.id && i.id.startsWith('slushies'));
       
-      if (brownSugar && !signatures.find(s => s.id === brownSugar.id)) signatures.push(brownSugar);
-      if (waffle && !signatures.find(s => s.id === waffle.id)) signatures.push(waffle);
-      if (slushie && !signatures.find(s => s.id === slushie.id)) signatures.push(slushie);
+      console.log('Fallback candidates:', {
+        brownSugar: brownSugar ? brownSugar.id : 'none',
+        waffle: waffle ? waffle.id : 'none',
+        slushie: slushie ? slushie.id : 'none'
+      });
+      
+      if (brownSugar && !signatures.find(s => s.id === brownSugar.id)) {
+        signatures.push(brownSugar);
+        console.log('  + Added brownSugar:', brownSugar.id);
+      }
+      if (waffle && !signatures.find(s => s.id === waffle.id)) {
+        signatures.push(waffle);
+        console.log('  + Added waffle:', waffle.id);
+      }
+      if (slushie && !signatures.find(s => s.id === slushie.id)) {
+        signatures.push(slushie);
+        console.log('  + Added slushie:', slushie.id);
+      }
       
       console.log('After fallback - total signatures:', signatures.length);
     }
     
     // Second fallback: use first 3 items if still not enough
     if (signatures.length < 3) {
+      console.log('⚠️ Still less than 3 items, using first 3 menu items as last resort');
       signatures = this.menuItems.slice(0, 3);
-      console.log('Using first 3 menu items as fallback');
+      console.log('Using first 3 menu items as fallback:', signatures.map(s => s.id));
     }
 
     // Ensure exactly 3 items maximum
     signatures = signatures.slice(0, 3);
     
-    console.log('Final signatures to render:', signatures.map(s => ({id: s.id, name: s.name})));
+    console.log('✅ Final signatures to render:', signatures.map(s => ({id: s.id, name: s.name})));
+    console.groupEnd();
     
     // Handle empty state - hide section if no signatures available
     if (signatures.length === 0) {
@@ -468,10 +499,10 @@ class App {
     // Render the cards
     const html = signatures.map(item => this.renderSignatureCard(item)).join('');
     console.log('Generated HTML length:', html.length);
-    console.log('First 200 chars of HTML:', html.substring(0, 200));
+    console.log('First 500 chars of HTML:', html.substring(0, 500));
     
     signaturesGrid.innerHTML = html;
-    console.log('Rendered', signatures.length, 'signature cards');
+    console.log('✅ Rendered', signatures.length, 'signature cards');
     console.log('signaturesGrid innerHTML length:', signaturesGrid.innerHTML.length);
     
     // Re-setup reveal animation for newly added elements
