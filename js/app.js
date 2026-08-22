@@ -57,92 +57,69 @@ class App {
     this.setupEventListeners();
     // Render the full menu grid
     this.renderMenu('all');
+    
     // Render signature/featured items section
     this.renderSignatures();
-    // Initialize scroll reveal animations
-    this.setupRevealAnimation();
-    console.log('App initialized, menu items:', this.menuItems.length);
   }
 
   /**
-   * Cache frequently accessed DOM elements to avoid repeated queries
-   * This improves performance by storing references in domCache object
-   * @returns {void}
+   * Render the signatures/featured items section
    */
-  cacheDOMElements() {
-    // List of all element IDs to cache
-    const ids = [
-      'menuBtn', 'mobileMenu', 'menuTabs', 'cartBtn', 'cartSidebar',
-      'closeCart', 'cartOverlay', 'cartPanel', 'closeModal', 'itemModal',
-      'modalOverlay', 'modalContent', 'modalImage', 'modalTitle',
-      'modalDescription', 'modalPrice', 'quantityDisplay', 'decreaseQty',
-      'increaseQty', 'addToCartBtn', 'checkoutBtn', 'menuGrid',
-      'signaturesGrid', 'cartItems', 'cartCount', 'cartTotal'
-    ];
+  renderSignatures() {
+    const signaturesGrid = this.domCache.signaturesGrid;
+    const signaturesSection = document.getElementById('signatures');
+
+    if (!signaturesGrid || !signaturesSection) return;
+
+    // Get featured items by specific IDs (matching CSV data)
+    const signatureIds = ['brown-sugar-1', 'waffle-1', 'slushies-1'];
     
-    // Store each element reference in the cache object
-    ids.forEach(id => {
-      this.domCache[id] = document.getElementById(id);
-    });
-  }
+    let signatures = signatureIds
+      .map(id => this.menuItems.find(i => i.id === id))
+      .filter(Boolean);
 
-  /**
-   * Load menu data from CSV file with fallback to hardcoded data
-   * @async
-   * @returns {Promise<void>}
-   */
-  async loadMenu() {
-    try {
-      // Fetch menu data from CMS CSV file
-      const response = await fetch('cms/data/menu.csv');
-      const csvText = await response.text();
-      // Parse CSV text into array of menu item objects
-      this.menuItems = this.parseCSV(csvText);
-      console.log('Menu loaded from CSV:', this.menuItems.length, 'items');
-      console.log('First few IDs:', this.menuItems.slice(0, 5).map(i => i.id));
-    } catch (error) {
-      // If CSV loading fails, use fallback menu data
-      console.error('Error loading menu:', error);
-      this.menuItems = this.getFallbackMenu();
-      console.log('Using fallback menu:', this.menuItems.length, 'items');
-    }
-  }
-
-  /**
-   * Parse CSV text into an array of menu item objects
-   * Handles Windows line endings and quoted fields with commas
-   * @param {string} csvText - Raw CSV text content
-   * @returns {Array<Object>} Array of menu item objects
-   */
-  parseCSV(csvText) {
-    // Handle Windows line endings (CRLF) and old Mac line endings (CR)
-    const normalizedText = csvText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-    const lines = normalizedText.trim().split('\n');
-    
-    // Parse header line and normalize to lowercase
-    const headers = this.parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
-
-    // Parse each data line into an object using headers as keys
-    return lines.slice(1).map(line => {
-      const values = this.parseCSVLine(line);
+    // Fallback: If specific IDs not found, get first item from key categories
+    if (signatures.length < 3) {
+      const brownSugar = this.menuItems.find(i => i.id && i.id.startsWith('brown-sugar'));
+      const waffle = this.menuItems.find(i => i.id && i.id.startsWith('waffle'));
+      const slushie = this.menuItems.find(i => i.id && i.id.startsWith('slushies'));
       
-      const item = {};
-      headers.forEach((header, index) => {
-        item[header] = values[index] || '';
-      });
+      if (brownSugar && !signatures.find(s => s.id === brownSugar.id)) signatures.push(brownSugar);
+      if (waffle && !signatures.find(s => s.id === waffle.id)) signatures.push(waffle);
+      if (slushie && !signatures.find(s => s.id === slushie.id)) signatures.push(slushie);
+    }
 
-      // Normalize price based on CSV structure - size_m contains the price
-      if (item.size_m) {
-        item.price = item.size_m;
-      }
-      // Generate ID from name if not present in CSV
-      if (!item.id) {
-        item.id = item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-      }
+    // Second fallback: use first 3 items if still not enough
+    if (signatures.length < 3) {
+      signatures = this.menuItems.slice(0, 3);
+    }
 
-      return item;
+    // Ensure exactly 3 items maximum
+    signatures = signatures.slice(0, 3);
+
+    // Handle empty state - hide section if no signatures available
+    if (signatures.length === 0) {
+      if (signaturesSection) {
+        signaturesSection.style.display = 'none';
+      }
+      return;
+    }
+
+    // Show section and render signature cards
+    if (signaturesSection) {
+      signaturesSection.style.display = 'block';
+    }
+
+    // Render the cards
+    const html = signatures.map(item => this.renderSignatureCard(item)).join('');
+    signaturesGrid.innerHTML = html;
+
+    // Re-setup reveal animation for newly added elements
+    requestAnimationFrame(() => {
+      this.setupRevealAnimation();
     });
   }
+
 
   /**
    * Parse a single CSV line handling quoted fields with commas
@@ -415,41 +392,72 @@ class App {
     const signaturesGrid = this.domCache.signaturesGrid;
     const signaturesSection = document.getElementById('signatures');
     
+    console.group('🔍 DEBUG: renderSignatures()');
+    console.log('signaturesGrid element:', signaturesGrid);
+    console.log('signaturesSection element:', signaturesSection);
+    console.log('Total menuItems loaded:', this.menuItems.length);
+    console.log('All menu item IDs:', this.menuItems.map(i => i.id));
+    
     if (!signaturesGrid) {
-      console.error('signaturesGrid element not found in DOM');
+      console.error('❌ signaturesGrid element not found in DOM');
+      console.groupEnd();
       return;
     }
 
     // Primary: Get featured items by specific IDs (matching CSV/fallback data)
-    const signatureIds = ['brown-sugar-1', 'waffle-1', 'slushies-1'];
-    let signatures = signatureIds.map(id => this.menuItems.find(i => i.id === id)).filter(Boolean);
+    const signatureIds = ['brown-sugar-1', 'waffles-1', 'slushies-1'];
+    console.log('🎯 Searching for signature IDs:', signatureIds);
+    
+    let signatures = signatureIds.map(id => {
+      const found = this.menuItems.find(i => i.id === id);
+      console.log(`  - Looking for "${id}":`, found ? `✅ Found "${found.name}"` : '❌ Not found');
+      return found;
+    }).filter(Boolean);
   
     console.log('Signature search - found:', signatures.length, 'items');
     console.log('Signature IDs matched:', signatures.map(s => s.id));
 
     // First fallback: If specific IDs not found, get first item from key categories
     if (signatures.length < 3) {
+      console.log('⚠️ Less than 3 items found, trying fallback strategy...');
       const brownSugar = this.menuItems.find(i => i.id && i.id.startsWith('brown-sugar'));
       const waffle = this.menuItems.find(i => i.id && i.id.startsWith('waffle'));
       const slushie = this.menuItems.find(i => i.id && i.id.startsWith('slushies'));
       
-      if (brownSugar && !signatures.find(s => s.id === brownSugar.id)) signatures.push(brownSugar);
-      if (waffle && !signatures.find(s => s.id === waffle.id)) signatures.push(waffle);
-      if (slushie && !signatures.find(s => s.id === slushie.id)) signatures.push(slushie);
+      console.log('Fallback candidates:', {
+        brownSugar: brownSugar ? brownSugar.id : 'none',
+        waffle: waffle ? waffle.id : 'none',
+        slushie: slushie ? slushie.id : 'none'
+      });
+      
+      if (brownSugar && !signatures.find(s => s.id === brownSugar.id)) {
+        signatures.push(brownSugar);
+        console.log('  + Added brownSugar:', brownSugar.id);
+      }
+      if (waffle && !signatures.find(s => s.id === waffle.id)) {
+        signatures.push(waffle);
+        console.log('  + Added waffle:', waffle.id);
+      }
+      if (slushie && !signatures.find(s => s.id === slushie.id)) {
+        signatures.push(slushie);
+        console.log('  + Added slushie:', slushie.id);
+      }
       
       console.log('After fallback - total signatures:', signatures.length);
     }
     
     // Second fallback: use first 3 items if still not enough
     if (signatures.length < 3) {
+      console.log('⚠️ Still less than 3 items, using first 3 menu items as last resort');
       signatures = this.menuItems.slice(0, 3);
-      console.log('Using first 3 menu items as fallback');
+      console.log('Using first 3 menu items as fallback:', signatures.map(s => s.id));
     }
 
     // Ensure exactly 3 items maximum
     signatures = signatures.slice(0, 3);
     
-    console.log('Final signatures to render:', signatures.map(s => ({id: s.id, name: s.name})));
+    console.log('✅ Final signatures to render:', signatures.map(s => ({id: s.id, name: s.name})));
+    console.groupEnd();
     
     // Handle empty state - hide section if no signatures available
     if (signatures.length === 0) {
@@ -468,14 +476,25 @@ class App {
     // Render the cards
     const html = signatures.map(item => this.renderSignatureCard(item)).join('');
     console.log('Generated HTML length:', html.length);
-    console.log('First 200 chars of HTML:', html.substring(0, 200));
+    console.log('First 500 chars of HTML:', html.substring(0, 500));
     
     signaturesGrid.innerHTML = html;
-    console.log('Rendered', signatures.length, 'signature cards');
+    console.log('✅ Rendered', signatures.length, 'signature cards');
     console.log('signaturesGrid innerHTML length:', signaturesGrid.innerHTML.length);
     
     // Re-setup reveal animation for newly added elements
-    requestAnimationFrame(() => this.setupRevealAnimation());
+    console.log('🔄 Setting up reveal animation for signatures...');
+    requestAnimationFrame(() => {
+      this.setupRevealAnimation();
+      // Double-check: force visible class on all signature cards
+      const cards = signaturesGrid.querySelectorAll('.reveal');
+      console.log('🔍 Found', cards.length, 'reveal elements in signaturesGrid');
+      cards.forEach((el, idx) => {
+        console.log(`  Card ${idx + 1}:`, el.tagName, 'classes:', el.className);
+        el.classList.add('visible');
+        console.log(`  ✅ Forced visible on card ${idx + 1}`);
+      });
+    });
   }
 
   /**
@@ -488,10 +507,12 @@ class App {
     const displayPrice = basePrice.toFixed(2);
     const imageUrl = `cms/images/${item.id}.png`;
 
+    console.log('🎨 Rendering signature card for:', item.id, item.name, 'Image:', imageUrl);
+
     return `
-      <article class="reveal group bg-milk rounded-[2rem] p-4 pb-7 border-2 border-navy/10 shadow-card hover:-translate-y-2 hover:rotate-1 transition-transform">
-        <div class="rounded-[1.6rem] overflow-hidden aspect-square">
-          <img loading="lazy" src="${imageUrl}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Crect fill=%22%23C08048%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Fredoka%22 font-size=%2220%22 fill=%22%23FFFBF2%22%3E${encodeURIComponent(item.name)}%3C/text%3E%3C/svg%3E'" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+      <article class="reveal group bg-milk rounded-[2rem] p-4 pb-7 border-2 border-navy/10 shadow-card hover:-translate-y-2 hover:rotate-1 transition-transform" style="opacity: 1; visibility: visible;">
+        <div class="rounded-[1.6rem] overflow-hidden aspect-square bg-stone-100">
+          <img loading="lazy" src="${imageUrl}" onerror="console.error('❌ Image failed to load:', this.src); this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Crect fill=%22%23C08048%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Fredoka%22 font-size=%2220%22 fill=%22%23FFFBF2%22%3E${encodeURIComponent(item.name)}%3C/text%3E%3C/svg%3E';" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
         </div>
         <div class="px-3 pt-5">
           <div class="flex items-center justify-between gap-2">
