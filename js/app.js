@@ -725,13 +725,8 @@ class App {
     const total = this.cart.reduce((sum, item) => sum + item.totalPrice, 0);
     message += `*TOTAL: £${total.toFixed(2)}*\n\n`;
     message += `*ORDER HEADS-UP!* Please wait for our WhatsApp confirmation before heading to the shop.\n\nAlso, let us know if you have any allergies when placing your order - we've got you!`;
+    
     // Encode for WhatsApp
-
-
-
-
-
-
     const encodedMessage = encodeURIComponent(message);
     
     // Open WhatsApp with pre-filled message
