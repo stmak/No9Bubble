@@ -1,35 +1,76 @@
-// NO.9 Bubble Tea - Main Application (Optimized)
-
+/**
+ * NO.9 Bubble Tea - Main Application
+ * 
+ * This is the main JavaScript application for the NO.9 Bubble Tea website.
+ * It handles all interactive functionality including:
+ * - Menu loading from CSV with fallback data
+ * - Product filtering by category
+ * - Shopping cart management
+ * - Product modal with customization options (size, sugar, ice)
+ * - WhatsApp checkout integration
+ * - Scroll reveal animations
+ * 
+ * @class App
+ */
 class App {
+  /**
+   * Creates an instance of App and initializes the application
+   * @constructor
+   */
   constructor() {
+    // Array to store menu items loaded from CSV
     this.menuItems = [];
+    // Array to store cart items
     this.cart = [];
+    // Currently selected item for modal display
     this.currentItem = null;
+    // Quantity selector value
     this.quantity = 1;
+    // Selected size option (Regular/Large)
     this.selectedSize = 'Regular';
+    // Selected sugar level (0%, 25%, 50%, 75%, 100%)
     this.selectedSugar = '0%';
+    // Selected ice level (0%, 25%, 50%, 75%, 100%)
     this.selectedIce = '0%';
     
-    // Cache DOM elements
+    // Cache object to store frequently accessed DOM elements for performance
     this.domCache = {};
     
-    // IntersectionObserver singleton
+    // Singleton IntersectionObserver for scroll reveal animations
     this.revealObserver = null;
     
+    // Initialize the application
     this.init();
   }
 
+  /**
+   * Initialize the application by setting up all components
+   * @async
+   * @returns {Promise<void>}
+   */
   async init() {
+    // Cache DOM elements for performance optimization
     this.cacheDOMElements();
+    // Load menu data from CSV file
     await this.loadMenu();
+    // Set up all event listeners for user interactions
     this.setupEventListeners();
+    // Render the full menu grid
     this.renderMenu('all');
+    // Render signature/featured items section
     this.renderSignatures();
+    // Initialize scroll reveal animations
     this.setupRevealAnimation();
     console.log('App initialized, menu items:', this.menuItems.length);
   }
 
+  /**
+   * Cache frequently accessed DOM elements to avoid repeated queries
+   * This improves performance by storing references in domCache object
+   * @returns {void}
+   */
   cacheDOMElements() {
+    // List of all element IDs to cache
     const ids = [
       'menuBtn', 'mobileMenu', 'menuTabs', 'cartBtn', 'cartSidebar',
       'closeCart', 'cartOverlay', 'cartPanel', 'closeModal', 'itemModal',
@@ -39,33 +80,49 @@ class App {
       'signaturesGrid', 'cartItems', 'cartCount', 'cartTotal'
     ];
     
+    // Store each element reference in the cache object
     ids.forEach(id => {
       this.domCache[id] = document.getElementById(id);
     });
   }
 
+  /**
+   * Load menu data from CSV file with fallback to hardcoded data
+   * @async
+   * @returns {Promise<void>}
+   */
   async loadMenu() {
     try {
+      // Fetch menu data from CMS CSV file
       const response = await fetch('cms/data/menu.csv');
       const csvText = await response.text();
+      // Parse CSV text into array of menu item objects
       this.menuItems = this.parseCSV(csvText);
       console.log('Menu loaded from CSV:', this.menuItems.length, 'items');
       console.log('First few IDs:', this.menuItems.slice(0, 5).map(i => i.id));
     } catch (error) {
+      // If CSV loading fails, use fallback menu data
       console.error('Error loading menu:', error);
       this.menuItems = this.getFallbackMenu();
       console.log('Using fallback menu:', this.menuItems.length, 'items');
     }
   }
 
+  /**
+   * Parse CSV text into an array of menu item objects
+   * Handles Windows line endings and quoted fields with commas
+   * @param {string} csvText - Raw CSV text content
+   * @returns {Array<Object>} Array of menu item objects
+   */
   parseCSV(csvText) {
-    // Handle Windows line endings (CRLF)
+    // Handle Windows line endings (CRLF) and old Mac line endings (CR)
     const normalizedText = csvText.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
     const lines = normalizedText.trim().split('\n');
     
-    // Parse header line
+    // Parse header line and normalize to lowercase
     const headers = this.parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
 
+    // Parse each data line into an object using headers as keys
     return lines.slice(1).map(line => {
       const values = this.parseCSVLine(line);
       
@@ -78,6 +135,7 @@ class App {
       if (item.size_m) {
         item.price = item.size_m;
       }
+      // Generate ID from name if not present in CSV
       if (!item.id) {
         item.id = item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
       }
@@ -86,27 +144,42 @@ class App {
     });
   }
 
+  /**
+   * Parse a single CSV line handling quoted fields with commas
+   * Uses state machine approach to track quote context
+   * @param {string} line - Single line of CSV text
+   * @returns {string[]} Array of field values
+   */
   parseCSVLine(line) {
     const values = [];
     let current = '';
     let inQuotes = false;
     
+    // Iterate through each character to properly handle quoted fields
     for (let i = 0; i < line.length; i++) {
       const char = line[i];
       if (char === '"') {
+        // Toggle quote state
         inQuotes = !inQuotes;
       } else if (char === ',' && !inQuotes) {
+        // Only split on comma if not inside quotes
         values.push(current.trim());
         current = '';
       } else {
         current += char;
       }
     }
+    // Push the last field
     values.push(current.trim());
     
     return values;
   }
 
+  /**
+   * Return fallback menu data when CSV loading fails
+   * Contains popular items across all categories
+   * @returns {Array<Object>} Array of hardcoded menu item objects
+   */
   getFallbackMenu() {
     return [
       { id: 'brown-sugar-1', name: 'Brown Sugar Bubble Milk Tea', category: 'brown-sugar', price: '6.50', description: 'Sweet & creamy, tiger-striped with warm brown sugar and loaded with chewy pearls.' },
@@ -130,41 +203,50 @@ class App {
     ];
   }
 
+  /**
+   * Set up all event listeners for user interactions
+   * Uses event delegation and cached DOM references for performance
+   * @returns {void}
+   */
   setupEventListeners() {
-    // Mobile menu - using cached DOM elements
+    // Destructure cached DOM elements for easier access
     const { menuBtn, mobileMenu, menuTabs, cartBtn, cartSidebar, closeCart, cartOverlay, cartPanel, 
             closeModal, itemModal, modalOverlay, decreaseQty, increaseQty, addToCartBtn, checkoutBtn } = this.domCache;
     
+    // Mobile menu toggle button handler
     if (menuBtn && mobileMenu) {
       menuBtn.addEventListener('click', () => {
         mobileMenu.classList.toggle('hidden');
       }, { passive: true });
     }
 
-    // Menu tabs - optimized with event delegation
+    // Menu category tabs with event delegation
     if (menuTabs) {
       menuTabs.addEventListener('click', (e) => {
         const btn = e.target.closest('.tab-btn');
         if (btn) {
+          // Remove active state from current tab
           const activeTab = menuTabs.querySelector('.tab-btn.active');
           if (activeTab) activeTab.classList.remove('active');
+          // Set new active tab and render filtered menu
           btn.classList.add('active');
           this.renderMenu(btn.dataset.filter);
         }
       }, { passive: true });
     }
 
-    // Cart - using cached references
-
+    // Open cart sidebar when cart button is clicked
     if (cartBtn && cartSidebar) {
       cartBtn.addEventListener('click', () => {
         cartSidebar.classList.remove('hidden');
+        // Use double requestAnimationFrame for smooth animation
         requestAnimationFrame(() => {
           requestAnimationFrame(() => cartPanel.classList.remove('translate-x-full'));
         });
       }, { passive: true });
     }
 
+    // Close cart handlers
     if (closeCart && cartSidebar) {
       closeCart.addEventListener('click', () => this.closeCart(), { passive: true });
     }
@@ -173,7 +255,7 @@ class App {
       cartOverlay.addEventListener('click', () => this.closeCart(), { passive: true });
     }
 
-    // Modal - using cached references (already destructured above)
+    // Modal close handlers
     if (closeModal && itemModal) {
       closeModal.addEventListener('click', () => this.closeModal(), { passive: true });
     }
@@ -182,7 +264,13 @@ class App {
       modalOverlay.addEventListener('click', () => this.closeModal(), { passive: true });
     }
 
-    // Button toggle helper - optimized to avoid repeated queries
+    /**
+     * Helper function to handle button group toggling (size, sugar, ice options)
+     * @param {string} selector - CSS selector for button elements
+     * @param {string} activeClass - Classes to apply when active
+     * @param {string} inactiveClass - Classes to apply when inactive
+     * @param {string} property - Instance property to update
+     */
     const toggleButtonGroup = (selector, activeClass, inactiveClass, property) => {
       document.querySelectorAll(selector).forEach(btn => {
         btn.addEventListener('click', () => {
@@ -198,16 +286,16 @@ class App {
       });
     };
 
-    // Size buttons - optimized with class list operations
+    // Initialize size option buttons (Regular/Large)
     toggleButtonGroup('.size-btn', 'active bg-navy text-cream', 'bg-milk border-2 border-navy/15 text-navy', 'selectedSize');
 
-    // Sugar buttons
+    // Initialize sugar level buttons (0%, 25%, 50%, 75%, 100%)
     toggleButtonGroup('.sugar-btn', 'active bg-navy text-cream', 'bg-milk border-2 border-navy/15 text-navy', 'selectedSugar');
 
-    // Ice buttons
+    // Initialize ice level buttons (0%, 25%, 50%, 75%, 100%)
     toggleButtonGroup('.ice-btn', 'active bg-navy text-cream', 'bg-milk border-2 border-navy/15 text-navy', 'selectedIce');
 
-    // Quantity - using cached references (already destructured above)
+    // Quantity decrease button handler
     if (decreaseQty) {
       decreaseQty.addEventListener('click', () => {
         if (this.quantity > 1) {
@@ -217,6 +305,7 @@ class App {
       }, { passive: true });
     }
 
+    // Quantity increase button handler
     if (increaseQty) {
       increaseQty.addEventListener('click', () => {
         this.quantity++;
@@ -224,25 +313,30 @@ class App {
       }, { passive: true });
     }
 
-    // Add to cart
+    // Add to cart button handler
     if (addToCartBtn) {
       addToCartBtn.addEventListener('click', () => this.addToCart(), { passive: true });
     }
 
-    // Checkout
-    // Checkout - WhatsApp integration
+    // Checkout button handler - sends order via WhatsApp
     if (checkoutBtn) {
       checkoutBtn.addEventListener('click', () => this.checkoutViaWhatsApp(), { passive: true });
     }
 
-    // Reveal on scroll
+    // Reveal on scroll animation
     this.setupRevealAnimation();
   }
 
+  /**
+   * Render the menu grid with optional category filtering
+   * @param {string} [filter='all'] - Category filter to apply
+   * @returns {void}
+   */
   renderMenu(filter = 'all') {
     const menuGrid = this.domCache.menuGrid;
     if (!menuGrid) return;
-    // Normalize filter to match CSV category names
+    
+    // Map filter values to CSV category names for matching
     const categoryMap = {
       'all': 'all',
       'brown-sugar': 'Brown Sugar',
@@ -257,18 +351,20 @@ class App {
 
     let filteredItems;
     if (filter === 'all') {
+      // Show all menu items
       filteredItems = this.menuItems;
     } else if (filter === 'snacks') {
-      // Snacks not in CSV, show empty or fallback
+      // Snacks not in CSV, show empty array
       filteredItems = [];
     } else {
+      // Filter by category using mapped search term
       const searchTerm = categoryMap[filter] || filter;
       filteredItems = this.menuItems.filter(item => 
         item.category && item.category.includes(searchTerm)
       );
     }
-    // Use DocumentFragment for better performance when inserting multiple elements
-    const fragment = document.createDocumentFragment();
+    
+    // Generate HTML for all filtered items efficiently
     const tempContainer = document.createElement('div');
     
     tempContainer.innerHTML = filteredItems.map(item => {
@@ -297,7 +393,7 @@ class App {
 
     menuGrid.innerHTML = tempContainer.innerHTML;
 
-    // Use event delegation for modal buttons - more efficient than adding listeners to each button
+    // Set up event delegation for modal open buttons
     menuGrid.addEventListener('click', (e) => {
       const btn = e.target.closest('.open-modal');
       if (btn && btn.dataset.id) {
@@ -306,10 +402,15 @@ class App {
       }
     }, { passive: true });
 
-    // Trigger reveal animation using requestAnimationFrame instead of setTimeout
+    // Initialize reveal animations for newly rendered items
     requestAnimationFrame(() => this.setupRevealAnimation());
   }
 
+  /**
+   * Render the signature/featured items section with top 3 products
+   * Uses multiple fallback strategies to ensure content is displayed
+   * @returns {void}
+   */
   renderSignatures() {
     const signaturesGrid = this.domCache.signaturesGrid;
     const signaturesSection = document.getElementById('signatures');
@@ -319,11 +420,11 @@ class App {
       return;
     }
 
-    // Get popular items by ID first - these are our featured signature items
+    // Primary: Get featured items by specific IDs
     const signatureIds = ['brown-sugar-1', 'waffle-1', 'slushies-1'];
     let signatures = signatureIds.map(id => this.menuItems.find(i => i.id === id)).filter(Boolean);
 
-    // Fallback: If specific IDs not found, get first item from key categories
+    // First fallback: If specific IDs not found, get first item from key categories
     if (signatures.length < 3) {
       const brownSugar = this.menuItems.find(i => i.id && i.id.startsWith('brown-sugar'));
       const waffle = this.menuItems.find(i => i.id && i.id.startsWith('waffle'));
@@ -334,23 +435,23 @@ class App {
       if (slushie && !signatures.find(s => s.id === slushie.id)) signatures.push(slushie);
     }
     
-    // Final fallback: use first 3 items if still not enough
+    // Second fallback: use first 3 items if still not enough
     if (signatures.length < 3) {
       signatures = this.menuItems.slice(0, 3);
     }
 
-    // Trim to exactly 3 items
+    // Ensure exactly 3 items maximum
     signatures = signatures.slice(0, 3);
     
+    // Handle empty state - hide section if no signatures available
     if (signatures.length === 0) {
-      // Hide the entire section if no signatures
       if (signaturesSection) {
         signaturesSection.style.display = 'none';
       }
       return;
     }
     
-    // Ensure section is visible if we have signatures
+    // Show section and render signature cards
     if (signaturesSection) {
       signaturesSection.style.display = 'block';
     }
@@ -359,6 +460,11 @@ class App {
     requestAnimationFrame(() => this.setupRevealAnimation());
   }
 
+  /**
+   * Generate HTML for a single signature card
+   * @param {Object} item - Menu item object
+   * @returns {string} HTML string for the signature card
+   */
   renderSignatureCard(item) {
     const basePrice = parseFloat(item.price) || 0;
     const displayPrice = basePrice.toFixed(2);
@@ -380,38 +486,47 @@ class App {
     `;
   }
 
+  /**
+   * Open the product detail modal with customization options
+   * @param {Object} item - Menu item object to display
+   * @returns {void}
+   */
   openModal(item) {
+    // Reset modal state to defaults
     this.currentItem = item;
     this.quantity = 1;
     this.selectedSize = 'Regular';
     this.selectedSugar = '0%';
     this.selectedIce = '0%';
 
+    // Get cached modal DOM elements
     const { itemModal, modalContent, modalImage, modalTitle, modalDescription, modalPrice, quantityDisplay } = this.domCache;
 
     if (!itemModal) return;
 
+    // Set product image with fallback SVG placeholder
     const imageUrl = `cms/images/${item.id}.png`;
     modalImage.src = imageUrl;
     modalImage.onerror = function() {
-      this.onerror = null; // Prevent infinite loop
+      this.onerror = null; // Prevent infinite error loop
       this.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 800 450%22%3E%3Crect fill=%22%23F2A3B1%22 width=%22800%22 height=%22450%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Fredoka%22 font-size=%2232%22 fill=%22%231E2A4A%22%3E' + encodeURIComponent(item.name) + '%3C/text%3E%3C/svg%3E';
     };
 
+    // Populate modal content
     modalTitle.textContent = item.name;
     modalDescription.textContent = item.description || '';
     const basePrice = parseFloat(item.price) || 0;
     modalPrice.textContent = `£${basePrice.toFixed(2)}`;
     quantityDisplay.textContent = '1';
 
-    // Reset buttons - optimized with single querySelectorAll call
+    // Reset all option buttons to inactive state
     const allOptionBtns = document.querySelectorAll('.size-btn, .sugar-btn, .ice-btn');
     allOptionBtns.forEach(btn => {
       btn.classList.remove('active', 'bg-navy', 'text-cream');
       btn.classList.add('bg-milk', 'border-2', 'border-navy/15', 'text-navy');
     });
 
-    // Set first button of each type as active - using cached queries
+    // Set default selections (first button of each type)
     const firstSize = document.querySelector('.size-btn[data-size="Regular"]');
     const firstSugar = document.querySelector('.sugar-btn[data-sugar="0%"]');
     const firstIce = document.querySelector('.ice-btn[data-ice="0%"]');
@@ -423,26 +538,32 @@ class App {
       }
     });
 
+    // Show modal with smooth animation
     itemModal.classList.remove('hidden');
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         modalContent.classList.remove('scale-95', 'opacity-0');
         modalContent.classList.add('scale-100', 'opacity-100');
-        // Ensure pointer events are enabled when modal opens
+        // Enable pointer events when modal is visible
         modalContent.style.pointerEvents = 'auto';
       });
     });
   }
 
+  /**
+   * Close the product detail modal with smooth animation
+   * @returns {void}
+   */
   closeModal() {
     const { itemModal, modalContent } = this.domCache;
 
     if (!itemModal) return;
 
+    // Animate out
     modalContent.classList.remove('scale-100', 'opacity-100');
     modalContent.classList.add('scale-95', 'opacity-0');
     
-    // Enable pointer events during animation
+    // Disable pointer events during animation
     modalContent.style.pointerEvents = 'none';
 
     setTimeout(() => {
@@ -450,28 +571,40 @@ class App {
     }, 300);
   }
 
+  /**
+   * Close the shopping cart sidebar with smooth animation
+   * @returns {void}
+   */
   closeCart() {
     const { cartPanel, cartSidebar } = this.domCache;
     if (!cartPanel || !cartSidebar) return;
     
+    // Slide out animation
     cartPanel.classList.add('translate-x-full');
     setTimeout(() => cartSidebar.classList.add('hidden'), 300);
   }
 
+  /**
+   * Add current item to cart with selected customizations
+   * Calculates price including size upcharge (£0.80 for Large)
+   * @returns {void}
+   */
   addToCart() {
     if (!this.currentItem) return;
 
     const basePrice = parseFloat(this.currentItem.price) || 0;
     let finalPrice = basePrice;
 
+    // Add size upcharge for Large
     if (this.selectedSize === 'Large') {
       finalPrice += 0.80;
     }
 
     const totalItemPrice = finalPrice * this.quantity;
 
+    // Create cart item object with all customizations
     const cartItem = {
-      id: this.currentItem.id + '-' + Date.now(),
+      id: this.currentItem.id + '-' + Date.now(), // Unique ID with timestamp
       itemId: this.currentItem.id,
       name: this.currentItem.name,
       size: this.selectedSize,
@@ -483,11 +616,12 @@ class App {
       image: `cms/images/${this.currentItem.id}.png`
     };
 
+    // Add to cart array and update display
     this.cart.push(cartItem);
     this.updateCartDisplay();
     this.closeModal();
 
-    // Show cart - using cached references and requestAnimationFrame
+    // Auto-open cart to show added item
     const { cartSidebar, cartPanel } = this.domCache;
     if (cartSidebar && cartPanel) {
       cartSidebar.classList.remove('hidden');
@@ -605,13 +739,15 @@ class App {
       });
     }, { threshold: 0.1, rootMargin: '50px' });
 
+    // Observe all elements with 'reveal' class
     document.querySelectorAll('.reveal').forEach(el => {
       this.revealObserver.observe(el);
     });
   }
 }
 
-// Initialize app with passive event listener support
+// Initialize the application when DOM is ready
+// Uses passive event listener option for better scroll performance
 document.addEventListener('DOMContentLoaded', () => {
   window.app = new App();
 }, { passive: true });
