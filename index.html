@@ -1,103 +1,132 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NO.9 Bubble Tea — Wolverhampton 🧋 Brewed to perfection, bubbled for happiness</title>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/500.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/600.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/700.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.0.8/400.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.0.8/700.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.0.8/800.css">
-
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      fontFamily: {
-        display: ['Fredoka', 'ui-rounded', 'system-ui', 'sans-serif'],
-        body: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-      },
-      colors: {
-        cream:  '#F7F0E3',
-        milk:   '#FFFBF2',
-        navy:   { DEFAULT: '#1E2A4A', deep: '#141E38' },
-        caramel:{ DEFAULT: '#C08048', deep: '#9A6430' },
-        blush:  { DEFAULT: '#F2A3B1', deep: '#E27D90' },
-        gold:   '#D9B36A',
-      },
-      boxShadow: {
-        sticker: '0 0 0 6px #FFFBF2, 0 14px 30px -12px rgba(30,42,74,.35)',
-        card: '0 10px 34px -14px rgba(30,42,74,.25)',
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NO.9 Bubble Tea — Wolverhampton 🧋 Brewed to perfection, bubbled for happiness</title>
+  
+  <!-- Load Fredoka font (display/playful) in weights 500, 600, 700 for headings and brand elements -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/500.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/600.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fredoka@5.0.8/700.css">
+  
+  <!-- Load Nunito font (body/readable) in weights 400, 700, 800 for body text and descriptions -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.0.8/400.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.0.8/700.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5.0.8/800.css">
+  
+  <!-- Tailwind CSS CDN for rapid styling (production should use local build with PurgeCSS) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind configuration: extend theme with custom fonts, colors, and shadows -->
+  <script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        // Font families: display for headings, body for text content
+        fontFamily: {
+          display: ['Fredoka', 'ui-rounded', 'system-ui', 'sans-serif'],
+          body: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+        // Brand color palette inspired by bubble tea ingredients
+        colors: {
+          cream:  '#F7F0E3',     // Light cream background
+          milk:   '#FFFBF2',     // Milky white cards
+          navy:   { DEFAULT: '#1E2A4A', deep: '#141E38' },  // Primary text/borders
+          caramel:{ DEFAULT: '#C08048', deep: '#9A6430' },  // Accent/warmth
+          blush:  { DEFAULT: '#F2A3B1', deep: '#E27D90' },  // Pink highlights
+          gold:   '#D9B36A',     // Premium accent
+        },
+        // Custom box shadows for sticker/card effects
+        boxShadow: {
+          sticker: '0 0 0 6px #FFFBF2, 0 14px 30px -12px rgba(30,42,74,.35)',
+          card: '0 10px 34px -14px rgba(30,42,74,.25)',
+        },
       },
     },
-  },
-};
-</script>
-
-<style>
-  html { scroll-padding-top: 96px; }
-  ::selection { background: #F2A3B1; color: #141E38; }
-  ::-webkit-scrollbar { width: 10px; }
-  ::-webkit-scrollbar-track { background: #F7F0E3; }
-  ::-webkit-scrollbar-thumb { background: #C08048; border-radius: 99px; border: 2px solid #F7F0E3; }
-
-  .dotted-bg {
-    background-image: radial-gradient(rgba(30,42,74,.10) 1.5px, transparent 1.5px);
-    background-size: 26px 26px;
-  }
-  .dotted-bg-light {
-    background-image: radial-gradient(rgba(255,251,242,.12) 1.5px, transparent 1.5px);
-    background-size: 26px 26px;
-  }
-
-  .marquee-track { display: flex; width: max-content; animation: marquee 26s linear infinite; }
-  .marquee-track:hover { animation-play-state: paused; }
-  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-  @keyframes floaty { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-16px) rotate(8deg); } }
-  .floaty  { animation: floaty 5s ease-in-out infinite; }
-  .floaty2 { animation: floaty 6.5s ease-in-out .8s infinite; }
-  .floaty3 { animation: floaty 7.5s ease-in-out 1.6s infinite; }
-
-  @keyframes wiggle { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
-  .wiggle { animation: wiggle 3.5s ease-in-out infinite; }
-
-  @keyframes rise { 0% { transform: translateY(0); opacity: 0; } 12% { opacity: .9; } 100% { transform: translateY(-46vh); opacity: 0; } }
-  .bubble-rise { position: absolute; bottom: -40px; border-radius: 9999px; animation: rise linear infinite; }
-
-  .reveal { opacity: 0; transform: translateY(30px) scale(.98); transition: opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1); }
-  .reveal.visible { opacity: 1; transform: translateY(0) scale(1); }
-
-  @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  .pop { animation: pop .45s cubic-bezier(.22,1,.36,1) both; }
-
-  .sticker { box-shadow: 0 0 0 5px #FFFBF2, 0 12px 26px -12px rgba(30,42,74,.4); }
-
-  .tab-btn.active { background: #1E2A4A; color: #FFFBF2; }
-  .tab-btn.active .tab-dot { background: #F2A3B1; }
-
-  .ig-tile .ig-overlay { opacity: 0; transition: opacity .3s ease; }
-  .ig-tile:hover .ig-overlay { opacity: 1; }
-  .ig-tile img { transition: transform .6s ease; }
-  .ig-tile:hover img { transform: scale(1.07); }
-
-  .heart-btn.liked svg { fill: #F2A3B1; stroke: #F2A3B1; transform: scale(1.15); }
-  .heart-btn svg { transition: transform .25s cubic-bezier(.34,1.56,.64,1), fill .2s, stroke .2s; }
-</style>
+  };
+  </script>
+  
+  <!-- Custom CSS: scroll behavior, animations, and utility classes not covered by Tailwind -->
+  <style>
+    /* Set scroll padding to account for fixed header when using anchor links */
+    html { scroll-padding-top: 96px; }
+    
+    /* Custom text selection colors matching brand palette */
+    ::selection { background: #F2A3B1; color: #141E38; }
+    
+    /* Custom scrollbar styling for WebKit browsers */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #F7F0E3; }
+    ::-webkit-scrollbar-thumb { background: #C08048; border-radius: 99px; border: 2px solid #F7F0E3; }
+  
+    /* Dotted background pattern for visual texture */
+    .dotted-bg {
+      background-image: radial-gradient(rgba(30,42,74,.10) 1.5px, transparent 1.5px);
+      background-size: 26px 26px;
+    }
+    .dotted-bg-light {
+      background-image: radial-gradient(rgba(255,251,242,.12) 1.5px, transparent 1.5px);
+      background-size: 26px 26px;
+    }
+  
+    /* Infinite horizontal marquee animation for category banner */
+    .marquee-track { display: flex; width: max-content; animation: marquee 26s linear infinite; }
+    .marquee-track:hover { animation-play-state: paused; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    
+    /* Floating animation for decorative labels (gentle up/down + rotation) */
+    @keyframes floaty { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-16px) rotate(8deg); } }
+    .floaty  { animation: floaty 5s ease-in-out infinite; }
+    .floaty2 { animation: floaty 6.5s ease-in-out .8s infinite; }
+    .floaty3 { animation: floaty 7.5s ease-in-out 1.6s infinite; }
+    
+    /* Wiggle animation for mascot character */
+    @keyframes wiggle { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+    .wiggle { animation: wiggle 3.5s ease-in-out infinite; }
+    
+    /* Rising bubble animation for hero background */
+    @keyframes rise { 0% { transform: translateY(0); opacity: 0; } 12% { opacity: .9; } 100% { transform: translateY(-46vh); opacity: 0; } }
+    .bubble-rise { position: absolute; bottom: -40px; border-radius: 9999px; animation: rise linear infinite; }
+    
+    /* Scroll reveal animation: fade in + slide up + scale */
+    .reveal { opacity: 0; transform: translateY(30px) scale(.98); transition: opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0) scale(1); }
+    
+    /* Pop-in animation for menu cards on filter change */
+    @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .pop { animation: pop .45s cubic-bezier(.22,1,.36,1) both; }
+    
+    /* Sticker effect: white border + soft shadow */
+    .sticker { box-shadow: 0 0 0 5px #FFFBF2, 0 12px 26px -12px rgba(30,42,74,.4); }
+    
+    /* Active state for tab buttons */
+    .tab-btn.active { background: #1E2A4A; color: #FFFBF2; }
+    .tab-btn.active .tab-dot { background: #F2A3B1; }
+    
+    /* Instagram tile hover effects */
+    .ig-tile .ig-overlay { opacity: 0; transition: opacity .3s ease; }
+    .ig-tile:hover .ig-overlay { opacity: 1; }
+    .ig-tile img { transition: transform .6s ease; }
+    .ig-tile:hover img { transform: scale(1.07); }
+    
+    /* Heart button like animation */
+    .heart-btn.liked svg { fill: #F2A3B1; stroke: #F2A3B1; transform: scale(1.15); }
+    .heart-btn svg { transition: transform .25s cubic-bezier(.34,1.56,.64,1), fill .2s, stroke .2s; }
+  </style>
 </head>
 
 <body class="font-body bg-cream text-navy antialiased overflow-x-hidden">
 
+<!-- Announcement banner: promotional message at top of page -->
 <div class="bg-navy text-cream text-center font-display text-sm md:text-base py-2.5 px-4 tracking-wide">
   ✨ Brewed to perfection, bubbled for happiness — now pouring opposite Wolverhampton Art Gallery ❤️
 </div>
 
+<!-- Sticky navigation header with logo, links, cart button, and mobile menu toggle -->
 <header id="siteNav" class="sticky top-0 z-50 bg-cream/85 backdrop-blur-xl border-b-2 border-navy/10 transition-shadow">
   <nav class="max-w-6xl mx-auto px-5 h-[76px] flex items-center justify-between">
+    <!-- Logo link with hover rotation effect -->
     <a href="#top" class="flex items-center gap-3 group">
       <img src="cms/images/logo.jpg" alt="NO.9 Bubble Tea Logo" class="w-12 h-12 rounded-full object-cover group-hover:rotate-6 transition-transform">
       <span class="leading-none">
@@ -106,6 +135,7 @@ tailwind.config = {
       </span>
     </a>
 
+    <!-- Desktop navigation links (hidden on mobile) -->
     <ul class="hidden md:flex items-center gap-7 font-display font-medium text-[15px]">
       <li><a href="#signatures" class="hover:text-caramel-deep transition-colors">Signatures</a></li>
       <li><a href="#menu" class="hover:text-caramel-deep transition-colors">Menu</a></li>
@@ -113,16 +143,21 @@ tailwind.config = {
       <li><a href="#visit" class="hover:text-caramel-deep transition-colors">Visit Us</a></li>
     </ul>
 
+    <!-- Cart button and mobile menu toggle -->
     <div class="flex items-center gap-3">
+      <!-- Cart button with item count badge -->
       <button id="cartBtn" aria-label="Open cart" class="relative w-11 h-11 rounded-full bg-blush text-navy-deep grid place-items-center sticker hover:-translate-y-0.5 transition-transform">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
         <span id="cartCount" class="absolute -top-1 -right-1 w-5 h-5 bg-navy text-cream text-xs font-bold rounded-full grid place-items-center">0</span>
       </button>
+      <!-- Mobile hamburger menu button -->
       <button id="menuBtn" aria-label="Open menu" class="md:hidden w-11 h-11 rounded-full bg-navy text-cream grid place-items-center">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h10"/></svg>
       </button>
     </div>
   </nav>
+  
+  <!-- Mobile menu dropdown (hidden by default) -->
   <div id="mobileMenu" class="md:hidden hidden border-t-2 border-navy/10 bg-milk px-6 py-4 space-y-1 font-display font-medium">
     <a class="block py-2 hover:text-caramel-deep" href="#signatures">Signatures</a>
     <a class="block py-2 hover:text-caramel-deep" href="#menu">Menu</a>
@@ -133,7 +168,9 @@ tailwind.config = {
 
 <main id="top">
 
+<!-- Hero section: main visual area with animated bubbles, headline, CTAs, and product image -->
 <section class="relative dotted-bg overflow-hidden">
+  <!-- Animated rising bubbles background (decorative, hidden from screen readers) -->
   <div class="pointer-events-none absolute inset-0" aria-hidden="true">
     <span class="bubble-rise left-[6%]  w-4 h-4 bg-blush/50"  style="animation-duration:9s"></span>
     <span class="bubble-rise left-[16%] w-6 h-6 bg-caramel/30" style="animation-duration:12s; animation-delay:2s"></span>
@@ -143,13 +180,17 @@ tailwind.config = {
     <span class="bubble-rise left-[90%] w-6 h-6 bg-caramel/25" style="animation-duration:13s; animation-delay:5s"></span>
   </div>
 
+  <!-- Hero content grid: text on left, image on right (stacked on mobile) -->
   <div class="max-w-6xl mx-auto px-5 pt-14 pb-24 md:pt-20 md:pb-28 grid lg:grid-cols-[1.05fr_.95fr] gap-14 items-center relative">
+    <!-- Left column: badges, headline, description, CTAs, info -->
     <div class="text-center lg:text-left">
+      <!-- Trust badges: social proof elements -->
       <div class="reveal visible inline-flex flex-wrap justify-center lg:justify-start gap-2 font-display text-xs md:text-sm">
         <span class="px-4 py-1.5 rounded-full bg-navy text-cream">⭐ Wolverhampton's home of boba</span>
         <span class="px-4 py-1.5 rounded-full bg-milk sticker text-caramel-deep">3.8K+ bubble lovers</span>
       </div>
 
+      <!-- Main headline with decorative underline -->
       <h1 class="reveal visible mt-6 font-display font-bold text-[44px] leading-[1.04] md:text-7xl tracking-tight">
         Brewed to<br class="hidden md:block">
         <span class="text-caramel-deep">perfection,</span><br>
@@ -159,11 +200,13 @@ tailwind.config = {
         </span>
       </h1>
 
+      <!-- Subheading: product description with location -->
       <p class="reveal visible mt-7 text-lg md:text-xl text-navy/70 max-w-xl mx-auto lg:mx-0 font-medium">
         Hand-shaken milk teas, chewy pearls, crispy bubble waffles &amp; loaded milkshakes —
         served with a smile at <strong class="text-navy">50 Lichfield Street</strong>, right opposite the Art Gallery. ❤️
       </p>
 
+      <!-- Primary call-to-action buttons -->
       <div class="reveal visible mt-9 flex flex-wrap justify-center lg:justify-start gap-4">
         <a href="#menu" class="font-display font-semibold text-lg bg-navy text-cream px-8 py-4 rounded-full sticker hover:-translate-y-1 hover:-rotate-1 transition-transform">
           🧋 See the menu
@@ -173,6 +216,7 @@ tailwind.config = {
         </a>
       </div>
 
+      <!-- Secondary info: hours, delivery, discount -->
       <div class="reveal visible mt-8 flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-2 font-display text-sm text-navy/60">
         <span>🕚 Open daily from 11:00</span>
         <span>🛵 Uber Eats · Deliveroo · Just Eat</span>
@@ -180,16 +224,21 @@ tailwind.config = {
       </div>
     </div>
 
+    <!-- Right column: hero image with decorative elements -->
     <div class="reveal visible relative mx-auto w-full max-w-md">
+      <!-- Background color blobs for depth -->
       <div class="absolute -inset-6 bg-blush/30 rounded-[3rem] rotate-3"></div>
       <div class="absolute -inset-6 bg-gold/30 rounded-[3rem] -rotate-2"></div>
+      <!-- Main product image with fallback SVG -->
       <div class="relative rounded-[3rem] overflow-hidden border-4 border-milk shadow-card">
         <img src="cms/images/hero.png" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 500%22%3E%3Crect fill=%22%23F2A3B1%22 width=%22400%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Fredoka%22 font-size=%2224%22 fill=%22%231E2A4A%22%3ENO.9 Bubble Tea%3C/text%3E%3C/svg%3E'" alt="NO.9 brown sugar bubble milk tea" class="w-full object-cover aspect-[4/5]">
       </div>
 
+      <!-- Mascot character with wiggle animation -->
       <img src="cms/images/mascot.png" onerror="this.style.display='none'" alt="NO.9 kawaii mascot sticker"
            class="absolute -top-10 -left-8 w-32 md:w-40 wiggle drop-shadow-xl rounded-2xl">
 
+      <!-- Floating decorative labels describing product features -->
       <span class="floaty absolute -right-5 top-16 font-display font-semibold text-sm bg-navy text-cream px-4 py-2 rounded-full sticker rotate-6">brown sugar swirl ✨</span>
       <span class="floaty2 absolute -left-6 bottom-24 font-display font-semibold text-sm bg-blush text-navy-deep px-4 py-2 rounded-full sticker -rotate-6">chewy pearls 🖤</span>
       <span class="floaty3 absolute -right-3 -bottom-5 font-display font-semibold text-sm bg-milk px-4 py-2 rounded-full sticker rotate-2">#1 most loved</span>
@@ -197,6 +246,7 @@ tailwind.config = {
   </div>
 </section>
 
+<!-- Marquee banner: scrolling category list (decorative, non-interactive) -->
 <div class="bg-caramel text-milk border-y-4 border-navy -rotate-1 scale-[1.02] overflow-hidden select-none" aria-hidden="true">
   <div class="marquee-track font-display font-semibold text-lg md:text-xl tracking-[.18em]">
     <div class="flex shrink-0 items-center">
