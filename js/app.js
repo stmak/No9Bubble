@@ -506,7 +506,18 @@ class App {
     console.log('signaturesGrid innerHTML length:', signaturesGrid.innerHTML.length);
     
     // Re-setup reveal animation for newly added elements
-    requestAnimationFrame(() => this.setupRevealAnimation());
+    console.log('🔄 Setting up reveal animation for signatures...');
+    requestAnimationFrame(() => {
+      this.setupRevealAnimation();
+      // Double-check: force visible class on all signature cards
+      const cards = signaturesGrid.querySelectorAll('.reveal');
+      console.log('🔍 Found', cards.length, 'reveal elements in signaturesGrid');
+      cards.forEach((el, idx) => {
+        console.log(`  Card ${idx + 1}:`, el.tagName, 'classes:', el.className);
+        el.classList.add('visible');
+        console.log(`  ✅ Forced visible on card ${idx + 1}`);
+      });
+    });
   }
 
   /**
@@ -519,10 +530,12 @@ class App {
     const displayPrice = basePrice.toFixed(2);
     const imageUrl = `cms/images/${item.id}.png`;
 
+    console.log('🎨 Rendering signature card for:', item.id, item.name, 'Image:', imageUrl);
+
     return `
-      <article class="reveal group bg-milk rounded-[2rem] p-4 pb-7 border-2 border-navy/10 shadow-card hover:-translate-y-2 hover:rotate-1 transition-transform">
-        <div class="rounded-[1.6rem] overflow-hidden aspect-square">
-          <img loading="lazy" src="${imageUrl}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Crect fill=%22%23C08048%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Fredoka%22 font-size=%2220%22 fill=%22%23FFFBF2%22%3E${encodeURIComponent(item.name)}%3C/text%3E%3C/svg%3E'" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+      <article class="reveal group bg-milk rounded-[2rem] p-4 pb-7 border-2 border-navy/10 shadow-card hover:-translate-y-2 hover:rotate-1 transition-transform" style="opacity: 1; visibility: visible;">
+        <div class="rounded-[1.6rem] overflow-hidden aspect-square bg-stone-100">
+          <img loading="lazy" src="${imageUrl}" onerror="console.error('❌ Image failed to load:', this.src); this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Crect fill=%22%23C08048%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Fredoka%22 font-size=%2220%22 fill=%22%23FFFBF2%22%3E${encodeURIComponent(item.name)}%3C/text%3E%3C/svg%3E';" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
         </div>
         <div class="px-3 pt-5">
           <div class="flex items-center justify-between gap-2">
