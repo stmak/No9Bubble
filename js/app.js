@@ -423,9 +423,6 @@ class App {
     // Primary: Get featured items by specific IDs (matching CSV/fallback data)
     const signatureIds = ['brown-sugar-1', 'waffle-1', 'slushies-1'];
     let signatures = signatureIds.map(id => this.menuItems.find(i => i.id === id)).filter(Boolean);
-  
-    console.log('Signature search - found:', signatures.length, 'items');
-    console.log('Signature IDs matched:', signatures.map(s => s.id));
 
     // First fallback: If specific IDs not found, get first item from key categories
     if (signatures.length < 3) {
@@ -436,27 +433,21 @@ class App {
       if (brownSugar && !signatures.find(s => s.id === brownSugar.id)) signatures.push(brownSugar);
       if (waffle && !signatures.find(s => s.id === waffle.id)) signatures.push(waffle);
       if (slushie && !signatures.find(s => s.id === slushie.id)) signatures.push(slushie);
-      
-      console.log('After fallback - total signatures:', signatures.length);
     }
     
     // Second fallback: use first 3 items if still not enough
     if (signatures.length < 3) {
       signatures = this.menuItems.slice(0, 3);
-      console.log('Using first 3 menu items as fallback');
     }
 
     // Ensure exactly 3 items maximum
     signatures = signatures.slice(0, 3);
-    
-    console.log('Final signatures to render:', signatures.map(s => ({id: s.id, name: s.name})));
     
     // Handle empty state - hide section if no signatures available
     if (signatures.length === 0) {
       if (signaturesSection) {
         signaturesSection.style.display = 'none';
       }
-      console.warn('No signature items found, hiding section');
       return;
     }
     
