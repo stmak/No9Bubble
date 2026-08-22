@@ -420,8 +420,8 @@ class App {
       return;
     }
 
-    // Primary: Get featured items by specific IDs
-    const signatureIds = ['brown-sugar-1', 'waffle-1', 'slushies-1'];
+    // Primary: Get featured items by specific IDs (matching CSV/fallback data)
+    const signatureIds = ['brown-sugar-1', 'waffles-1', 'slushies-1'];
     let signatures = signatureIds.map(id => this.menuItems.find(i => i.id === id)).filter(Boolean);
   
     console.log('Signature search - found:', signatures.length, 'items');
